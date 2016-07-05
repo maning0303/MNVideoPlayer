@@ -10,7 +10,6 @@
         android:id="@+id/mn_videoplayer"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginTop="20dp"
         android:background="#363636"
         app:mnFirstNeedPlay="false" />
 
