@@ -2,10 +2,10 @@
 SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手势快进快退、调节音量，亮度等。
 
 ##项目截图：
-![](https://github.com/maning0303/GankMM/raw/master/screenshots/001.jpg)
-![](https://github.com/maning0303/GankMM/raw/master/screenshots/002.jpg)
-![](https://github.com/maning0303/GankMM/raw/master/screenshots/003.jpg)
-![](https://github.com/maning0303/GankMM/raw/master/screenshots/004.jpg)
+![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/001.jpg)
+![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/002.jpg)
+![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/003.jpg)
+![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/004.jpg)
 
 ##使用步骤：
 ####1：添加mnvideoplayerlibrary为moudle
