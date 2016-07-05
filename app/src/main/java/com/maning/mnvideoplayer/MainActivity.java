@@ -13,8 +13,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MNViderPlayer";
 
-    private final String url1 = "http://2449.vod.myqcloud.com/2449_bfbbfa3cea8f11e5aac3db03cda99974.f20.mp4";
-    private final String url2 = "http://172.20.248.102/video/2016/0614/575fe55e8559c_wpd.mp4";
+    private final String url1 = "http://svideo.spriteapp.com/video/2016/0703/7b5bc740-4134-11e6-ac2b-d4ae5296039d_wpd.mp4";
+    private final String url2 = "http://bvideo.spriteapp.cn/video/2016/0704/577a4c29e1f14_wpd.mp4";
     //这个地址是错误的
     private final String url3 = "http://weibo.com/p/23044451f0e5c4b762b9e1aa49c3091eea4d94";
     private MNViderPlayer mnViderPlayer;
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         mnViderPlayer.setIsNeedBatteryListen(true);
         mnViderPlayer.setIsNeedNetChangeListen(true);
         //第一次进来先设置数据
-        mnViderPlayer.setDataSource(url2, "我是大标题");
+        mnViderPlayer.setDataSource(url2, "标题2");
 
         //播放完成监听
         mnViderPlayer.setOnCompletionListener(new MNViderPlayer.OnCompletionListener() {
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btn02(View view) {
+        //position表示需要跳转到的位置
         mnViderPlayer.playVideo(url2, "标题2", 1000);
     }
 
@@ -99,7 +100,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        mnViderPlayer.destroyVideo();
+        //一定要记得销毁View
+        if(mnViderPlayer != null){
+            mnViderPlayer.destroyVideo();
+            mnViderPlayer = null;
+        }
         super.onDestroy();
     }
 }
