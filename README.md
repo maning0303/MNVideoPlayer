@@ -4,15 +4,18 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 ## 注意：
 一个基础代码，还有很多不完善的地方，可以作为一个参考，代码不多，建议看看代码。
 
-##项目截图：
+## 项目截图：
+
 ![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/001.jpg)
 ![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/002.jpg)
 ![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/003.jpg)
 ![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/004.jpg)
 
-##使用步骤：
-####1：添加mnvideoplayerlibrary为moudle
-####2：布局文件添加
+## 使用步骤：
+#### 1：添加mnvideoplayerlibrary为moudle
+#### 2：布局文件添加
+``` java
+
             <com.maning.mnvideoplayerlibrary.player.MNViderPlayer
                 android:id="@+id/mn_videoplayer"
                 android:layout_width="match_parent"
@@ -20,8 +23,11 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
                 android:background="#363636"
                 app:mnFirstNeedPlay="false"     //true：初始化完成后立马播放
                 />
+                
+```
 
-####3：代码调用
+#### 3：代码调用
+``` java
             //初始化相关参数(必须放在Play前面)
             mnViderPlayer.setIsNeedBatteryListen(true);
             mnViderPlayer.setIsNeedNetChangeListen(true);
@@ -56,5 +62,6 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
             //----------------------------------
             //第二次播放调用：
             mnViderPlayer.playVideo(url1, "标题1");
-
+            
+```
 
