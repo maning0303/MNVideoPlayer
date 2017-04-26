@@ -826,7 +826,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
      *
      * @param url      视频地址
      * @param title    视频标题
-     * @param position 视频跳转的位置
+     * @param position 视频跳转的位置(毫秒)
      */
     public void playVideo(String url, String title, int position) {
         //地址判空处理
