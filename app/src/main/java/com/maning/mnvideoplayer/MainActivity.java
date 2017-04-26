@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private final String url3 = "http://weibo.com/p/23044451f0e5c4b762b9e1aa49c3091eea4d94";
 
     private MNViderPlayer mnViderPlayer;
+
+    private static Handler handler = new Handler();
 
 
     @Override
@@ -106,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void btn02(View view) {
         //position表示需要跳转到的位置
-        mnViderPlayer.playVideo(url2, "标题2", 1000);
+        mnViderPlayer.playVideo(url2, "标题2",30000);
+
     }
 
     public void btn03(View view) {

@@ -548,11 +548,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     public void onPrepared(final MediaPlayer mediaPlayer) {
         mediaPlayer.start(); // 开始播放
         isPrepare = true;
-        if (video_position > 0) {
-            Log.i(TAG, "onPrepared---video_position:" + video_position);
-            mediaPlayer.seekTo(video_position);
-            video_position = 0;
-        }
         // 把得到的总长度和进度条的匹配
         mn_seekBar.setMax(mediaPlayer.getDuration());
         mn_iv_play_pause.setImageResource(R.drawable.mn_player_pause);
@@ -563,6 +558,13 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             public void run() {
                 initBottomMenuState();
                 mn_player_rl_progress.setVisibility(View.GONE);
+
+                //跳转指定位置
+                if (video_position > 0) {
+                    Log.i(TAG, "onPrepared---video_position:" + video_position);
+                    MNViderPlayer.this.mediaPlayer.seekTo(video_position);
+                    video_position = 0;
+                }
             }
         }, 500);
     }
