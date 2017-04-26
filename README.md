@@ -11,9 +11,31 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 ![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/003.jpg)
 ![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/004.jpg)
 
-## 使用步骤：
+
+## 如何添加
+### Gradle添加：
+#### 1.在Project的build.gradle中添加仓库地址
+``` gradle
+	allprojects {
+		repositories {
+			...
+			maven { url "https://jitpack.io" }
+		}
+	}
+```
+
+#### 2.在app目录下的build.gradle中添加依赖
+``` gradle
+	dependencies {
+	     compile 'com.github.maning0303:MNVideoPlayer:V1.0.0'
+	}
+```
+
+### moudle添加(建议这种方式代码简单,便于修改)：
 #### 1：添加mnvideoplayerlibrary为moudle
-#### 2：布局文件添加
+
+## 使用步骤：
+#### 1：布局文件添加
 ``` java
 
             <com.maning.mnvideoplayerlibrary.player.MNViderPlayer
@@ -26,7 +48,7 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
                 
 ```
 
-#### 3：代码调用
+#### 2：代码调用
 ``` java
             //初始化相关参数(必须放在Play前面)
             mnViderPlayer.setIsNeedBatteryListen(true);
@@ -62,6 +84,45 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
             //----------------------------------
             //第二次播放调用：
             mnViderPlayer.playVideo(url1, "标题1");
+
+
+            //退出销毁
+             @Override
+             protected void onDestroy() {
+                    //一定要记得销毁View
+                    if (mnViderPlayer != null) {
+                        mnViderPlayer.destroyVideo();
+                        mnViderPlayer = null;
+                    }
+                    super.onDestroy();
+             }
             
+```
+
+#### 2：注意事项:
+``` java
+
+             //问题:亮度调节不了是权限问题
+             private void requestPermission() {
+                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                     if (!Settings.System.canWrite(this)) {
+                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                         builder.setTitle("提示");
+                         builder.setMessage("视频播放调节亮度需要申请权限");
+                         builder.setNegativeButton("取消", null);
+                         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                             @Override
+                             public void onClick(DialogInterface dialog, int which) {
+                                 Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,
+                                         Uri.parse("package:" + getPackageName()));
+                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                 startActivityForResult(intent, 100);
+                             }
+                         });
+                         builder.show();
+                     }
+                 }
+             }
+
 ```
 
