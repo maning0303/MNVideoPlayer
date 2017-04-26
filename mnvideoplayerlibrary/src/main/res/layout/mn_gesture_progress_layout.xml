@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mn_gesture_progress_layout"
+    android:layout_width="100dp"
+    android:layout_height="80dp"
+    android:layout_centerInParent="true"
+    android:background="@drawable/mn_palyer_black_bg"
+    android:gravity="center"
+    android:visibility="visible">
+
+    <ImageView
+        android:id="@+id/mn_gesture_iv_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/mn_player_forward" />
+
+    <TextView
+        android:id="@+id/mn_gesture_tv_progress_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mn_gesture_iv_progress"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="4dp"
+        android:gravity="right"
+        android:text="00:35 / 24:89"
+        android:textColor="#ffececec"
+        android:textSize="12sp" />
+</RelativeLayout>

@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">MNVideoPlayerLibrary</string>
+
+
+    <string name="mnPlayerNoNetHint">当前网络不可用,检查网络设置</string>
+    <string name="mnPlayerUrlEmptyHint">播放地址为空</string>
+    <string name="mnPlayerPlayFailHint">视频播放失败</string>
+    <string name="mnPlayerMobileNetHint">请注意,当前网络状态切换为3G/4G网络</string>
+
+
+
+</resources>

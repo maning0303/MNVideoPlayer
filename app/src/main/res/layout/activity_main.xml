@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e2e2e2"
+    android:orientation="vertical">
+
+    <com.maning.mnvideoplayerlibrary.player.MNViderPlayer
+        android:id="@+id/mn_videoplayer"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="#363636"
+        app:mnFirstNeedPlay="false" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="btn01"
+        android:text="地址1" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="btn02"
+        android:text="地址2 --- 直接播放指定的位置" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="btn03"
+        android:text="地址3---错误地址" />
+
+</LinearLayout>

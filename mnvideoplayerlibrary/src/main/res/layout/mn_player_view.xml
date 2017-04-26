@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <SurfaceView
+            android:id="@+id/mn_palyer_surfaceView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true" />
+
+        <include layout="@layout/mn_player_progress_view" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/mn_rl_bottom_menu"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPlayerBlackTrans"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/mn_iv_play_pause"
+            android:layout_width="50dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/mn_player_play" />
+
+        <ImageView
+            android:id="@+id/mn_iv_fullScreen"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/mn_player_ic_fullscreen" />
+
+        <TextView
+            android:id="@+id/mn_tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/mn_iv_fullScreen"
+            android:text="00:00 / 00:00"
+            android:textColor="@color/colorPlayerWhite" />
+
+        <SeekBar
+            android:id="@+id/mn_seekBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="6dp"
+            android:layout_toLeftOf="@id/mn_tv_time"
+            android:layout_toRightOf="@id/mn_iv_play_pause"
+            android:maxHeight="4dp"
+            android:minHeight="4dp"
+            android:paddingLeft="6dp"
+            android:paddingRight="16dp"
+            android:progressDrawable="@drawable/mn_player_progress_diy"
+            android:thumb="@drawable/mn_player_thumb"
+            android:thumbOffset="6dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/mn_rl_top_menu"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPlayerBlackTrans">
+
+        <ImageView
+            android:id="@+id/mn_iv_back"
+            android:layout_width="50dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/mn_player_back" />
+
+        <TextView
+            android:id="@+id/mn_tv_system_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:text="00:00"
+            android:textColor="@color/colorPlayerWhite"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/mn_iv_battery"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@id/mn_tv_system_time"
+            android:paddingBottom="3dp"
+            android:src="@drawable/mn_player_battery_05"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/mn_tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@id/mn_iv_battery"
+            android:layout_toRightOf="@id/mn_iv_back"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/colorPlayerWhite"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/mn_player_iv_lock"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="30dp"
+        android:background="@drawable/mn_palyer_black_circle"
+        android:padding="10dp"
+        android:src="@drawable/mn_player_landscape_screen_lock_open"
+        android:visibility="visible" />
+
+    <include layout="@layout/mn_gesture_volume_layout" />
+
+    <include layout="@layout/mn_gesture_light_layout" />
+
+    <include layout="@layout/mn_gesture_progress_layout" />
+
+</RelativeLayout>
