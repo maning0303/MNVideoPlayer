@@ -31,9 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     private MNViderPlayer mnViderPlayer;
 
-    private static Handler handler = new Handler();
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
