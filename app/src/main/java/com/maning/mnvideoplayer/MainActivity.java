@@ -1,7 +1,9 @@
 package com.maning.mnvideoplayer;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -24,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private final String url2 = "http://bvideo.spriteapp.cn/video/2016/0704/577a4c29e1f14_wpd.mp4";
     //这个地址是错误的
     private final String url3 = "http://weibo.com/p/23044451f0e5c4b762b9e1aa49c3091eea4d94";
+    //本地视频
+    private final String url4 = "/storage/emulated/0/DCIM/Camera/VID_20170426_113936.mp4";
 
     private MNViderPlayer mnViderPlayer;
 
@@ -70,7 +74,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initPlayer() {
+
         //初始化相关参数(必须放在Play前面)
+        mnViderPlayer.setWidthAndHeightProportion(16, 6);
         mnViderPlayer.setIsNeedBatteryListen(true);
         mnViderPlayer.setIsNeedNetChangeListen(true);
         //第一次进来先设置数据
@@ -109,12 +115,21 @@ public class MainActivity extends AppCompatActivity {
 
     public void btn02(View view) {
         //position表示需要跳转到的位置
-        mnViderPlayer.playVideo(url2, "标题2",30000);
+        mnViderPlayer.playVideo(url2, "标题2", 30000);
 
     }
 
     public void btn03(View view) {
         mnViderPlayer.playVideo(url3, "标题3");
+    }
+
+    public void btn04(View view) {
+        if (hasPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE")) {
+            mnViderPlayer.playVideo(url4, "标题4");
+        } else {
+            Toast.makeText(this, "没有存储权限", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
@@ -145,6 +160,12 @@ public class MainActivity extends AppCompatActivity {
             mnViderPlayer = null;
         }
         super.onDestroy();
+    }
+
+
+    public boolean hasPermission(Context context, String permission) {
+        int perm = context.checkCallingOrSelfPermission(permission);
+        return perm == PackageManager.PERMISSION_GRANTED;
     }
 
 }

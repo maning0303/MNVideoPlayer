@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -69,6 +70,8 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     //控件的位置信息
     private float mediaPlayerX;
     private float mediaPlayerY;
+    private int playerViewW;
+    private int playerViewH;
 
     // 计时器
     private Timer timer_video_time;
@@ -84,7 +87,12 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     private boolean isNeedNetChangeListen = true;
     private boolean isFirstPlay = false;
 
+    //默认宽高比16:9
+    private int defaultWidthProportion = 16;
+    private int defaultHeightProportion = 9;
+
     //控件
+    private LinearLayout mn_player_surface_bg;
     private RelativeLayout mn_rl_bottom_menu;
     private SurfaceView mn_palyer_surfaceView;
     private ImageView mn_iv_play_pause;
@@ -150,8 +158,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             //计算视频的大小16：9
             layoutParams.width = screenWidth;
-            layoutParams.height = screenWidth * 9 / 16;
-
+            layoutParams.height = screenWidth * defaultHeightProportion / defaultWidthProportion;
             setX(mediaPlayerX);
             setY(mediaPlayerY);
         }
@@ -164,6 +171,12 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             setY(0);
         }
         setLayoutParams(layoutParams);
+
+        playerViewW = screenWidth;
+        playerViewH = layoutParams.height;
+
+        //适配大小
+        fitVideoSize();
     }
 
     //初始化
@@ -186,6 +199,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         mn_player_progressBar = (ProgressWheel) inflate.findViewById(R.id.mn_player_progressBar);
         mn_iv_battery = (ImageView) inflate.findViewById(R.id.mn_iv_battery);
         mn_player_iv_play_center = (ImageView) inflate.findViewById(R.id.mn_player_iv_play_center);
+        mn_player_surface_bg = (LinearLayout) inflate.findViewById(R.id.mn_player_surface_bg);
 
         mn_seekBar.setOnSeekBarChangeListener(this);
         mn_iv_play_pause.setOnClickListener(this);
@@ -216,7 +230,10 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             public void run() {
                 mediaPlayerX = getX();
                 mediaPlayerY = getY();
-                Log.i(TAG, "控件的位置---X：" + mediaPlayerX + "，Y：" + mediaPlayerY);
+                playerViewW = getWidth();
+                playerViewH = getHeight();
+                Log.i(TAG, "控件信息---X：" + mediaPlayerX + "，Y：" + mediaPlayerY);
+                Log.i(TAG, "控件信息---playerViewW：" + playerViewW + "，playerViewH：" + playerViewH);
             }
         }, 1000);
     }
@@ -502,6 +519,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        Log.i(TAG, "surfaceChanged---width：" + width + ",height:" + height);
     }
 
     @Override
@@ -567,6 +585,45 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 }
             }
         }, 500);
+        //适配大小
+        fitVideoSize();
+
+    }
+
+    private void fitVideoSize() {
+        if (mediaPlayer == null) {
+            return;
+        }
+        //适配视频的高度
+        int videoWidth = mediaPlayer.getVideoWidth();
+        int videoHeight = mediaPlayer.getVideoHeight();
+        int parentWidth = playerViewW;
+        int parentHeight = playerViewH;
+        int screenWidth = PlayerUtils.getScreenWidth(activity);
+        int screenHeight = PlayerUtils.getScreenHeight(activity);
+
+        //判断视频宽高和父布局的宽高
+        int surfaceViewW;
+        int surfaceViewH;
+        if ((float) videoWidth / (float) videoHeight > (float) parentWidth / (float) parentHeight) {
+            surfaceViewW = parentWidth;
+            surfaceViewH = videoHeight * surfaceViewW / videoWidth;
+        } else {
+            surfaceViewH = parentHeight;
+            surfaceViewW = videoWidth * parentHeight / videoHeight;
+        }
+
+        Log.i(TAG, "fitVideoSize---" +
+                "videoWidth：" + videoWidth + ",videoHeight:" + videoHeight +
+                ",parentWidth:" + parentWidth + ",parentHeight:" + parentHeight +
+                ",screenWidth:" + screenWidth + ",screenHeight:" + screenHeight +
+                ",surfaceViewW:" + surfaceViewW + ",surfaceViewH:" + surfaceViewH
+        );
+        //改变surfaceView的大小
+        ViewGroup.LayoutParams params = mn_player_surface_bg.getLayoutParams();
+        params.height = surfaceViewH;
+        params.width = surfaceViewW;
+        mn_player_surface_bg.setLayoutParams(params);
     }
 
     //--------------------------------------------------------------------------------------
@@ -799,6 +856,14 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     //--------------------------------------------------------------------------------------
 
     /**
+     * 设置宽高比:默认16:9
+     */
+    public void setWidthAndHeightProportion(int width, int height) {
+        this.defaultWidthProportion = width;
+        this.defaultHeightProportion = height;
+    }
+
+    /**
      * 设置视频信息
      *
      * @param url   视频地址
@@ -887,6 +952,8 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 mediaPlayer.setDataSource(videoPath);
                 // 准备开始,异步准备，自动在子线程中
                 mediaPlayer.prepareAsync();
+                //视频缩放模式
+                mediaPlayer.setVideoScalingMode(android.media.MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
             } else {
                 Toast.makeText(context, "播放器初始化失败", Toast.LENGTH_SHORT).show();
             }

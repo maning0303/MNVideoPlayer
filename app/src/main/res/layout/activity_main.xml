@@ -34,4 +34,11 @@
         android:onClick="btn03"
         android:text="地址3---错误地址" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:onClick="btn04"
+        android:text="地址4---本地视频" />
+
 </LinearLayout>

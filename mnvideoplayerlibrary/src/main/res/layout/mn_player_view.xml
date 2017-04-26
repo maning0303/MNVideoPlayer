@@ -7,11 +7,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <SurfaceView
-            android:id="@+id/mn_palyer_surfaceView"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_centerInParent="true"
+            android:id="@+id/mn_player_surface_bg"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true" />
+            android:gravity="center">
+
+            <SurfaceView
+                android:id="@+id/mn_palyer_surfaceView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
 
         <include layout="@layout/mn_player_progress_view" />
 
