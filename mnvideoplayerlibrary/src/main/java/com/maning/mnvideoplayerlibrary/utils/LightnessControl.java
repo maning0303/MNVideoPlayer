@@ -2,7 +2,9 @@ package com.maning.mnvideoplayerlibrary.utils;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.nfc.Tag;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -10,6 +12,8 @@ import android.widget.Toast;
  * 调节屏幕亮度的类
  */
 public class LightnessControl {
+
+    private static final String TAG = "MNVideoPlayer";
 
     // 判断是否开启了自动亮度调节
     public static boolean isAutoBrightness(Activity act) {
@@ -19,7 +23,7 @@ public class LightnessControl {
             automicBrightness = Settings.System.getInt(aContentResolver,
                     Settings.System.SCREEN_BRIGHTNESS_MODE) == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
         } catch (Exception e) {
-            Toast.makeText(act, "无法获取亮度", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "判断是否开启了自动亮度调节失败:" + e.toString());
         }
         return automicBrightness;
     }
@@ -27,12 +31,15 @@ public class LightnessControl {
     // 改变亮度
     public static void SetLightness(Activity act, int value) {
         try {
+            if (isAutoBrightness(act)) {
+                stopAutoBrightness(act);
+            }
             Settings.System.putInt(act.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, value);
             WindowManager.LayoutParams lp = act.getWindow().getAttributes();
             lp.screenBrightness = (value <= 0 ? 1 : value) / 255f;
             act.getWindow().setAttributes(lp);
         } catch (Exception e) {
-//            Toast.makeText(act, "无法改变亮度", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "无法改变屏幕亮度:" + e.toString());
         }
     }
 

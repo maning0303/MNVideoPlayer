@@ -1,10 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.maning.mnvideoplayerlibrary">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!--改变屏幕亮度-->
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!--网络变化-->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <!--网络-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"

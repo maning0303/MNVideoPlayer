@@ -1,7 +1,13 @@
 package com.maning.mnvideoplayer;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -26,10 +32,38 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mnViderPlayer = (MNViderPlayer) findViewById(R.id.mn_videoplayer);
+        initViews();
 
         initPlayer();
 
+        //请求权限:调节亮度
+        requestPermission();
+
+    }
+
+    private void requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.System.canWrite(this)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("提示");
+                builder.setMessage("视频播放调节亮度需要申请权限");
+                builder.setNegativeButton("取消", null);
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,
+                                Uri.parse("package:" + getPackageName()));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivityForResult(intent, 100);
+                    }
+                });
+                builder.show();
+            }
+        }
+    }
+
+    private void initViews() {
+        mnViderPlayer = (MNViderPlayer) findViewById(R.id.mn_videoplayer);
     }
 
     private void initPlayer() {
@@ -37,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         mnViderPlayer.setIsNeedBatteryListen(true);
         mnViderPlayer.setIsNeedNetChangeListen(true);
         //第一次进来先设置数据
-        mnViderPlayer.setDataSource(url2, "标题2");
+        mnViderPlayer.setDataSource(url2, "标题");
 
         //播放完成监听
         mnViderPlayer.setOnCompletionListener(new MNViderPlayer.OnCompletionListener() {
@@ -102,10 +136,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         //一定要记得销毁View
-        if(mnViderPlayer != null){
+        if (mnViderPlayer != null) {
             mnViderPlayer.destroyVideo();
             mnViderPlayer = null;
         }
         super.onDestroy();
     }
+
 }
