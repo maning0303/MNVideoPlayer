@@ -76,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
     private void initPlayer() {
 
         //初始化相关参数(必须放在Play前面)
-        mnViderPlayer.setWidthAndHeightProportion(16, 6);
-        mnViderPlayer.setIsNeedBatteryListen(true);
-        mnViderPlayer.setIsNeedNetChangeListen(true);
+        mnViderPlayer.setWidthAndHeightProportion(16, 9);   //设置宽高比
+        mnViderPlayer.setIsNeedBatteryListen(true);         //设置电量监听
+        mnViderPlayer.setIsNeedNetChangeListen(true);       //设置网络监听
         //第一次进来先设置数据
         mnViderPlayer.setDataSource(url2, "标题");
 

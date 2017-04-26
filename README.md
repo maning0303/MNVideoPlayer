@@ -50,9 +50,9 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 
 #### 2：代码调用
 ``` java
-            //初始化相关参数(必须放在Play前面)
-            mnViderPlayer.setIsNeedBatteryListen(true);
-            mnViderPlayer.setIsNeedNetChangeListen(true);
+            mnViderPlayer.setWidthAndHeightProportion(16, 9);   //设置宽高比
+            mnViderPlayer.setIsNeedBatteryListen(true);         //设置电量监听
+            mnViderPlayer.setIsNeedNetChangeListen(true);       //设置网络监听
             //第一次进来先设置数据
             mnViderPlayer.setDataSource(url2, "标题2");
 
