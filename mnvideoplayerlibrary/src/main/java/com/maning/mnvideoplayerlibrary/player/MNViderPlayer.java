@@ -62,6 +62,9 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     private SurfaceHolder surfaceHolder;
     private MediaPlayer mediaPlayer;
 
+    //标记暂停和播放状态
+    private boolean isPlaying = true;
+
     //地址
     private String videoPath;
     private String videoTitle;
@@ -284,11 +287,9 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         if (i == R.id.mn_iv_play_pause) {
             if (mediaPlayer != null) {
                 if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                    mn_iv_play_pause.setImageResource(R.drawable.mn_player_play);
+                    pauseVideo();
                 } else {
-                    mediaPlayer.start();
-                    mn_iv_play_pause.setImageResource(R.drawable.mn_player_pause);
+                    startVideo();
                 }
             }
         } else if (i == R.id.mn_iv_fullScreen) {
@@ -526,10 +527,11 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     public void surfaceDestroyed(SurfaceHolder holder) {
         //保存播放位置
         if (mediaPlayer != null) {
+            mediaPlayer.pause();
+            mn_iv_play_pause.setImageResource(R.drawable.mn_player_play);
             video_position = mediaPlayer.getCurrentPosition();
         }
         destroyControllerTask(true);
-        pauseVideo();
         Log.i(TAG, "surfaceDestroyed---video_position：" + video_position);
     }
 
@@ -537,6 +539,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         mn_iv_play_pause.setImageResource(R.drawable.mn_player_play);
+        isPlaying = false;
         destroyControllerTask(true);
         video_position = 0;
         if (onCompletionListener != null) {
@@ -565,10 +568,16 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     @Override
     public void onPrepared(final MediaPlayer mediaPlayer) {
         mediaPlayer.start(); // 开始播放
+        //是否开始播放
+        if (!isPlaying) {
+            mediaPlayer.pause();
+            mn_iv_play_pause.setImageResource(R.drawable.mn_player_play);
+        } else {
+            mn_iv_play_pause.setImageResource(R.drawable.mn_player_pause);
+        }
         isPrepare = true;
         // 把得到的总长度和进度条的匹配
         mn_seekBar.setMax(mediaPlayer.getDuration());
-        mn_iv_play_pause.setImageResource(R.drawable.mn_player_pause);
         mn_tv_time.setText(String.valueOf(PlayerUtils.converLongTimeToStr(mediaPlayer.getCurrentPosition()) + "/" + PlayerUtils.converLongTimeToStr(mediaPlayer.getDuration())));
         //延时：避免出现上一个视频的画面闪屏
         myHandler.postDelayed(new Runnable() {
@@ -907,6 +916,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         videoTitle = title;
         video_position = position;
         isPrepare = false;
+        isPlaying = true;
 
         //判断当前有没有网络（播放的是网络视频）
         if (!PlayerUtils.isNetworkConnected(context) && url.startsWith("http")) {
@@ -969,6 +979,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         if (mediaPlayer != null) {
             mediaPlayer.start();
             mn_iv_play_pause.setImageResource(R.drawable.mn_player_pause);
+            isPlaying = true;
         }
     }
 
@@ -980,6 +991,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             mediaPlayer.pause();
             mn_iv_play_pause.setImageResource(R.drawable.mn_player_play);
             video_position = mediaPlayer.getCurrentPosition();
+            isPlaying = false;
         }
     }
 

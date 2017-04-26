@@ -125,7 +125,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "没有存储权限", Toast.LENGTH_SHORT).show();
         }
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //暂停
+        mnViderPlayer.pauseVideo();
     }
 
     @Override
@@ -135,17 +141,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         super.onBackPressed();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mnViderPlayer.pauseVideo();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Override
