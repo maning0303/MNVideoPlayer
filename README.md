@@ -102,7 +102,7 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 #### 2：注意事项:
 ``` java
 
-             //问题:亮度调节不了是权限问题
+             //1:亮度调节不了是权限问题
              private void requestPermission() {
                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                      if (!Settings.System.canWrite(this)) {
@@ -123,6 +123,15 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
                      }
                  }
              }
+
+             //2:当按Home键或者跳转其他页面不销毁当前页面的时候,SufaceView看不见会被销毁,重新回来会重建,默认会自动接着播放。
+                 (当你不需要自动播放的时候,可以如下:)
+                  @Override
+                  protected void onPause() {
+                      super.onPause();
+                      //暂停
+                      mnViderPlayer.pauseVideo();
+                  }
 
 ```
 
