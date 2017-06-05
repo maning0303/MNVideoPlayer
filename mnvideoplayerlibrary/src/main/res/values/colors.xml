@@ -7,4 +7,6 @@
     <color name="colorPlayerProgressBg">#e1767676</color>
     <color name="colorPlayerProgressSecond">#c1c1c1</color>
     <color name="colorPlayerProgress">#FFFFFF</color>
+    <!-- 透明 -->
+    <color name="colorPlayerTrans">#00000000</color>
 </resources>

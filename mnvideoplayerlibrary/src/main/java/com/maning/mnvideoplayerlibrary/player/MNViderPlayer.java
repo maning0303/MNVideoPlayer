@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -18,7 +19,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -113,6 +113,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     private ProgressWheel mn_player_progressBar;
     private ImageView mn_iv_battery;
     private ImageView mn_player_iv_play_center;
+    private ImageView iv_video_thumbnail;
 
     public MNViderPlayer(Context context) {
         this(context, null);
@@ -203,6 +204,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         mn_iv_battery = (ImageView) inflate.findViewById(R.id.mn_iv_battery);
         mn_player_iv_play_center = (ImageView) inflate.findViewById(R.id.mn_player_iv_play_center);
         mn_player_surface_bg = (LinearLayout) inflate.findViewById(R.id.mn_player_surface_bg);
+        iv_video_thumbnail = (ImageView) inflate.findViewById(R.id.iv_video_thumbnail);
 
         mn_seekBar.setOnSeekBarChangeListener(this);
         mn_iv_play_pause.setOnClickListener(this);
@@ -212,6 +214,8 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         mn_player_ll_error.setOnClickListener(this);
         mn_player_ll_net.setOnClickListener(this);
         mn_player_iv_play_center.setOnClickListener(this);
+
+        mn_palyer_surfaceView.setAlpha(0);
 
         //初始化
         initViews();
@@ -253,6 +257,28 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         mn_player_ll_net.setVisibility(View.GONE);
         mn_player_iv_play_center.setVisibility(View.GONE);
         initTopMenu();
+
+    }
+
+    private void setVideoThumbnail(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Bitmap videoThumbnail = PlayerUtils.createVideoThumbnail(videoPath, getWidth(), getHeight());
+                myHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (videoThumbnail != null) {
+                            iv_video_thumbnail.setVisibility(View.VISIBLE);
+                            iv_video_thumbnail.setImageBitmap(videoThumbnail);
+                        } else {
+                            iv_video_thumbnail.setVisibility(View.GONE);
+                        }
+                    }
+                });
+            }
+        }).start();
+
     }
 
     private void initLock() {
@@ -567,6 +593,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
 
     @Override
     public void onPrepared(final MediaPlayer mediaPlayer) {
+
         mediaPlayer.start(); // 开始播放
         //是否开始播放
         if (!isPlaying) {
@@ -596,6 +623,9 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         }, 500);
         //适配大小
         fitVideoSize();
+
+        mn_palyer_surfaceView.setAlpha(1);
+        iv_video_thumbnail.setVisibility(View.GONE);
 
     }
 
@@ -882,6 +912,8 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //赋值
         videoPath = url;
         videoTitle = title;
+
+        setVideoThumbnail();
     }
 
     /**
@@ -918,6 +950,9 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         isPrepare = false;
         isPlaying = true;
 
+        //初始化View
+        initViews();
+
         //判断当前有没有网络（播放的是网络视频）
         if (!PlayerUtils.isNetworkConnected(context) && url.startsWith("http")) {
             Toast.makeText(context, context.getString(R.string.mnPlayerNoNetHint), Toast.LENGTH_SHORT).show();
@@ -932,8 +967,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //重置MediaPlayer
         resetMediaPlayer();
 
-        //初始化View
-        initViews();
         //判断广播相关
         if (isNeedBatteryListen) {
             registerBatteryReceiver();
@@ -947,6 +980,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         } else {
             unregisterNetReceiver();
         }
+
     }
 
     private void resetMediaPlayer() {
@@ -965,6 +999,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 //视频缩放模式
                 mediaPlayer.setVideoScalingMode(android.media.MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
             } else {
+                //TODO:播放器初始化失败后怎么操作
                 Toast.makeText(context, "播放器初始化失败", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {

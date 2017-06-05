@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     //这个地址是错误的
     private final String url3 = "http://weibo.com/p/23044451f0e5c4b762b9e1aa49c3091eea4d94";
     //本地视频
-    private final String url4 = "/storage/emulated/0/DCIM/Camera/VID_20170426_113936.mp4";
+    private final String url4 = "/storage/emulated/0/DCIM/Camera/VID_20170605_143722.mp4";
 
     private MNViderPlayer mnViderPlayer;
 

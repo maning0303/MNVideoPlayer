@@ -2,12 +2,17 @@ package com.maning.mnvideoplayerlibrary.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.media.ThumbnailUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.util.DisplayMetrics;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by maning on 16/6/15.
@@ -125,6 +130,39 @@ public class PlayerUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * 获取视频略缩图
+     * @param url
+     * @param width
+     * @param height
+     * @return
+     */
+    public static Bitmap createVideoThumbnail(String url, int width, int height) {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            if (Build.VERSION.SDK_INT >= 14) {
+                retriever.setDataSource(url, new HashMap<String, String>());
+            } else {
+                retriever.setDataSource(url);
+            }
+            bitmap = retriever.getFrameAtTime();
+            if (bitmap != null) {
+                bitmap = ThumbnailUtils.extractThumbnail(bitmap, width, height,
+                        ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+            }
+        } catch (Exception ex) {
+            // Assume this is a corrupt video file.
+        } finally {
+            try {
+                retriever.release();
+            } catch (RuntimeException ex) {
+                // Ignore failures while cleaning up.
+            }
+        }
+        return bitmap;
     }
 
 
