@@ -3,9 +3,4 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-
-
-    <!--播放器相关颜色-->
-    <color name="colorPlayerBlackTrans">#bb000000</color>
-    <color name="colorPlayerWhite">#FFFFFF</color>
 </resources>
