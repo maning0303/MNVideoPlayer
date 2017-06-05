@@ -260,25 +260,28 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
 
     }
 
-    private void setVideoThumbnail(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final Bitmap videoThumbnail = PlayerUtils.createVideoThumbnail(videoPath, getWidth(), getHeight());
-                myHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (videoThumbnail != null) {
-                            iv_video_thumbnail.setVisibility(View.VISIBLE);
-                            iv_video_thumbnail.setImageBitmap(videoThumbnail);
-                        } else {
-                            iv_video_thumbnail.setVisibility(View.GONE);
-                        }
+    private void setVideoThumbnail() {
+        if (PlayerUtils.isNetworkConnected(context)) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final Bitmap videoThumbnail = PlayerUtils.createVideoThumbnail(videoPath, getWidth(), getHeight());
+                    if (iv_video_thumbnail.getVisibility() == View.VISIBLE) {
+                        myHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (videoThumbnail != null) {
+                                    iv_video_thumbnail.setVisibility(View.VISIBLE);
+                                    iv_video_thumbnail.setImageBitmap(videoThumbnail);
+                                } else {
+                                    iv_video_thumbnail.setVisibility(View.GONE);
+                                }
+                            }
+                        });
                     }
-                });
-            }
-        }).start();
-
+                }
+            }).start();
+        }
     }
 
     private void initLock() {
@@ -624,6 +627,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //适配大小
         fitVideoSize();
 
+        //恢复显示,隐藏列缩图
         mn_palyer_surfaceView.setAlpha(1);
         iv_video_thumbnail.setVisibility(View.GONE);
 

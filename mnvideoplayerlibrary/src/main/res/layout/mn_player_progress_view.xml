@@ -4,7 +4,7 @@
                 android:id="@+id/mn_player_rl_progress"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#5a000000">
+                android:background="#6f000000">
 
     <com.maning.mnvideoplayerlibrary.view.ProgressWheel
         android:id="@+id/mn_player_progressBar"
