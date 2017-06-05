@@ -960,7 +960,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             return;
         }
         //手机网络给提醒
-        if (PlayerUtils.isMobileConnected(context)) {
+        if (PlayerUtils.isMobileConnected(context) && url.startsWith("http")) {
             Toast.makeText(context, context.getString(R.string.mnPlayerMobileNetHint), Toast.LENGTH_SHORT).show();
         }
 
