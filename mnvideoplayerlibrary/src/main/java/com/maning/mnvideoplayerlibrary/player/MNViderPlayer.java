@@ -385,6 +385,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         mn_player_ll_net.setVisibility(View.GONE);
         mn_player_progressBar.setVisibility(View.GONE);
         mn_player_ll_error.setVisibility(View.VISIBLE);
+        iv_video_thumbnail.setVisibility(View.GONE);
     }
 
     private void showNoNetView() {
@@ -392,6 +393,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         mn_player_ll_net.setVisibility(View.VISIBLE);
         mn_player_progressBar.setVisibility(View.GONE);
         mn_player_ll_error.setVisibility(View.GONE);
+        iv_video_thumbnail.setVisibility(View.GONE);
     }
 
     private void setLandscape() {
