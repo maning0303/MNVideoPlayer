@@ -1,5 +1,6 @@
 # MNVideoPlayer
 SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手势快进快退、调节音量，亮度等。
+[![](https://jitpack.io/v/maning0303/MNVideoPlayer.svg)](https://jitpack.io/#maning0303/MNVideoPlayer)
 
 ## 注意：
 一个基础代码，还有很多不完善的地方，可以作为一个参考，代码不多，建议看看代码。
