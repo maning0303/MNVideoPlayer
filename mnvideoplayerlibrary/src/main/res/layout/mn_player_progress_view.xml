@@ -4,7 +4,7 @@
                 android:id="@+id/mn_player_rl_progress"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#6f000000">
+                android:background="#73000000">
 
     <com.maning.mnvideoplayerlibrary.view.ProgressWheel
         android:id="@+id/mn_player_progressBar"
@@ -14,6 +14,15 @@
         wheel:matProg_barColor="#ffffff"
         wheel:matProg_barWidth="3dp"
         wheel:matProg_progressIndeterminate="true"/>
+
+
+    <ImageView
+        android:id="@+id/mn_player_iv_play_center"
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/mn_player_center_play"/>
+
 
     <LinearLayout
         android:id="@+id/mn_player_ll_error"
@@ -64,12 +73,5 @@
             android:textSize="14sp"/>
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/mn_player_iv_play_center"
-        android:layout_width="90dp"
-        android:layout_height="60dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/mn_player_center_play"/>
 
 </RelativeLayout>

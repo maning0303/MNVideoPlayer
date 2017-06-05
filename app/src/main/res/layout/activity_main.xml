@@ -15,8 +15,8 @@
         <com.maning.mnvideoplayerlibrary.player.MNViderPlayer
             android:id="@+id/mn_videoplayer"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:background="#76b8fa"
+            android:layout_height="300dp"
+            android:background="#252525"
             app:mnFirstNeedPlay="false"/>
 
 

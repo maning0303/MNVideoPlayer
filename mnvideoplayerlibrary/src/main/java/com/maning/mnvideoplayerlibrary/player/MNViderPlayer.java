@@ -215,8 +215,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         mn_player_ll_net.setOnClickListener(this);
         mn_player_iv_play_center.setOnClickListener(this);
 
-        mn_palyer_surfaceView.setAlpha(0);
-
         //初始化
         initViews();
 
@@ -246,6 +244,9 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     }
 
     private void initViews() {
+
+        mn_palyer_surfaceView.setAlpha(0);
+
         mn_tv_system_time.setText(PlayerUtils.getCurrentHHmmTime());
         mn_rl_bottom_menu.setVisibility(View.GONE);
         mn_rl_top_menu.setVisibility(View.GONE);
@@ -266,19 +267,17 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 @Override
                 public void run() {
                     final Bitmap videoThumbnail = PlayerUtils.createVideoThumbnail(videoPath, getWidth(), getHeight());
-                    if (iv_video_thumbnail.getVisibility() == View.VISIBLE) {
-                        myHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (videoThumbnail != null) {
-                                    iv_video_thumbnail.setVisibility(View.VISIBLE);
-                                    iv_video_thumbnail.setImageBitmap(videoThumbnail);
-                                } else {
-                                    iv_video_thumbnail.setVisibility(View.GONE);
-                                }
+                    myHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (videoThumbnail != null) {
+                                iv_video_thumbnail.setVisibility(View.VISIBLE);
+                                iv_video_thumbnail.setImageBitmap(videoThumbnail);
+                            } else {
+                                iv_video_thumbnail.setVisibility(View.GONE);
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             }).start();
         }
