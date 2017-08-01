@@ -1,5 +1,6 @@
 package com.maning.mnvideoplayer;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     //这个地址是错误的
     private final String url3 = "http://weibo.com/p/23044451f0e5c4b762b9e1aa49c3091eea4d94";
     //本地视频
-    private final String url4 = "/storage/emulated/0/DCIM/Camera/VID_20170605_143722.mp4";
+    private final String url4 = "/storage/emulated/0/Movies/Starry_Night.mp4";
 
     private MNViderPlayer mnViderPlayer;
 
@@ -123,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
         if (hasPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE")) {
             mnViderPlayer.playVideo(url4, "标题4");
         } else {
+            //请求权限
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
             Toast.makeText(this, "没有存储权限", Toast.LENGTH_SHORT).show();
         }
     }
@@ -157,6 +161,20 @@ public class MainActivity extends AppCompatActivity {
     public boolean hasPermission(Context context, String permission) {
         int perm = context.checkCallingOrSelfPermission(permission);
         return perm == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 100: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "存储权限申请成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "存储权限申请失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }
     }
 
 }
