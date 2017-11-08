@@ -14,9 +14,6 @@
         <attr name="matProg_linearProgress" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="MNViderPlayer">
-        <!--第一次进入时默认播放还是默认不播放-->
-        <attr name="mnFirstNeedPlay" format="boolean" />
-    </declare-styleable>
+    <declare-styleable name="MNViderPlayer"></declare-styleable>
 
 </resources>

@@ -34,6 +34,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maning.mnvideoplayerlibrary.R;
+import com.maning.mnvideoplayerlibrary.listener.OnCompletionListener;
+import com.maning.mnvideoplayerlibrary.listener.OnNetChangeListener;
+import com.maning.mnvideoplayerlibrary.listener.OnScreenOrientationListener;
 import com.maning.mnvideoplayerlibrary.utils.LightnessControl;
 import com.maning.mnvideoplayerlibrary.utils.PlayerUtils;
 import com.maning.mnvideoplayerlibrary.view.ProgressWheel;
@@ -88,7 +91,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     private boolean isPrepare = false;
     private boolean isNeedBatteryListen = true;
     private boolean isNeedNetChangeListen = true;
-    private boolean isFirstPlay = false;
 
     //默认宽高比16:9
     private int defaultWidthProportion = 16;
@@ -139,9 +141,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //遍历拿到自定义属性
         for (int i = 0; i < typedArray.getIndexCount(); i++) {
             int index = typedArray.getIndex(i);
-            if (index == R.styleable.MNViderPlayer_mnFirstNeedPlay) {
-                isFirstPlay = typedArray.getBoolean(R.styleable.MNViderPlayer_mnFirstNeedPlay, false);
-            }
+            //暂时不需要自定义属性
         }
         //销毁
         typedArray.recycle();
@@ -165,6 +165,10 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             layoutParams.height = screenWidth * defaultHeightProportion / defaultWidthProportion;
             setX(mediaPlayerX);
             setY(mediaPlayerY);
+            //竖屏通知
+            if (onScreenOrientationListener != null) {
+                onScreenOrientationListener.orientation_portrait();
+            }
         }
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -173,6 +177,10 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
 
             setX(0);
             setY(0);
+            //横屏通知
+            if (onScreenOrientationListener != null) {
+                onScreenOrientationListener.orientation_landscape();
+            }
         }
         setLayoutParams(layoutParams);
 
@@ -217,11 +225,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
 
         //初始化
         initViews();
-
-        if (!isFirstPlay) {
-            mn_player_iv_play_center.setVisibility(View.VISIBLE);
-            mn_player_progressBar.setVisibility(View.GONE);
-        }
 
         //初始化SurfaceView
         initSurfaceView();
@@ -524,28 +527,24 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //播放错误的监听
         mediaPlayer.setOnErrorListener(this);
         mediaPlayer.setOnBufferingUpdateListener(this);
-        //第一次初始化需不需要主动播放
-        if (isFirstPlay) {
-            //判断当前有没有网络（播放的是网络视频）
-            if (!PlayerUtils.isNetworkConnected(context) && videoPath.startsWith("http")) {
-                Toast.makeText(context, context.getString(R.string.mnPlayerNoNetHint), Toast.LENGTH_SHORT).show();
-                showNoNetView();
-            } else {
-                //手机网络给提醒
-                if (PlayerUtils.isMobileConnected(context)) {
-                    Toast.makeText(context, context.getString(R.string.mnPlayerMobileNetHint), Toast.LENGTH_SHORT).show();
-                }
-                //添加播放路径
-                try {
-                    mediaPlayer.setDataSource(videoPath);
-                    // 准备开始,异步准备，自动在子线程中
-                    mediaPlayer.prepareAsync();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        //判断当前有没有网络（播放的是网络视频）
+        if (!PlayerUtils.isNetworkConnected(context) && videoPath.startsWith("http")) {
+            Toast.makeText(context, context.getString(R.string.mnPlayerNoNetHint), Toast.LENGTH_SHORT).show();
+            showNoNetView();
+        } else {
+            //手机网络给提醒
+            if (PlayerUtils.isMobileConnected(context)) {
+                Toast.makeText(context, context.getString(R.string.mnPlayerMobileNetHint), Toast.LENGTH_SHORT).show();
+            }
+            //添加播放路径
+            try {
+                mediaPlayer.setDataSource(videoPath);
+                // 准备开始,异步准备，自动在子线程中
+                mediaPlayer.prepareAsync();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-        isFirstPlay = true;
     }
 
     @Override
@@ -1230,8 +1229,8 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         if (onNetChangeListener != null) {
             onNetChangeListener = null;
         }
-        if (onPlayerCreatedListener != null) {
-            onPlayerCreatedListener = null;
+        if (onCompletionListener != null) {
+            onCompletionListener = null;
         }
     }
 
@@ -1243,28 +1242,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         this.onNetChangeListener = onNetChangeListener;
     }
 
-    public interface OnNetChangeListener {
-        //wifi
-        void onWifi(MediaPlayer mediaPlayer);
-
-        //手机
-        void onMobile(MediaPlayer mediaPlayer);
-
-        //不可用
-        void onNoAvailable(MediaPlayer mediaPlayer);
-    }
-
-    //SurfaceView初始化完成回调
-    private OnPlayerCreatedListener onPlayerCreatedListener;
-
-    public void setOnPlayerCreatedListener(OnPlayerCreatedListener onPlayerCreatedListener) {
-        this.onPlayerCreatedListener = onPlayerCreatedListener;
-    }
-
-    public interface OnPlayerCreatedListener {
-        //不可用
-        void onPlayerCreated(String url, String title);
-    }
 
     //-----------------------播放完回调
     private OnCompletionListener onCompletionListener;
@@ -1273,8 +1250,11 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         this.onCompletionListener = onCompletionListener;
     }
 
-    public interface OnCompletionListener {
-        void onCompletion(MediaPlayer mediaPlayer);
+    //-----------------------屏幕方向的监听
+    private OnScreenOrientationListener onScreenOrientationListener;
+
+    public void setOnScreenOrientationListener(OnScreenOrientationListener onScreenOrientationListener) {
+        this.onScreenOrientationListener = onScreenOrientationListener;
     }
 
 }

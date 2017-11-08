@@ -17,7 +17,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.maning.mnvideoplayerlibrary.listener.OnCompletionListener;
+import com.maning.mnvideoplayerlibrary.listener.OnNetChangeListener;
+import com.maning.mnvideoplayerlibrary.listener.OnScreenOrientationListener;
 import com.maning.mnvideoplayerlibrary.player.MNViderPlayer;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,15 +86,27 @@ public class MainActivity extends AppCompatActivity {
         mnViderPlayer.setDataSource(url2, "标题");
 
         //播放完成监听
-        mnViderPlayer.setOnCompletionListener(new MNViderPlayer.OnCompletionListener() {
+        mnViderPlayer.setOnCompletionListener(new OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 Log.i(TAG, "播放完成----");
             }
         });
 
+        mnViderPlayer.setOnScreenOrientationListener(new OnScreenOrientationListener() {
+            @Override
+            public void orientation_landscape() {
+                Toast.makeText(MainActivity.this, "横屏", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void orientation_portrait() {
+                Toast.makeText(MainActivity.this, "竖屏", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         //网络监听
-        mnViderPlayer.setOnNetChangeListener(new MNViderPlayer.OnNetChangeListener() {
+        mnViderPlayer.setOnNetChangeListener(new OnNetChangeListener() {
             @Override
             public void onWifi(MediaPlayer mediaPlayer) {
             }
@@ -114,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
     public void btn02(View view) {
         //position表示需要跳转到的位置
         mnViderPlayer.playVideo(url2, "标题2", 30000);
-
     }
 
     public void btn03(View view) {
@@ -123,7 +139,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void btn04(View view) {
         if (hasPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE")) {
-            mnViderPlayer.playVideo(url4, "标题4");
+            //判断本地有没有这个文件
+            File file = new File(url4);
+            if (file.exists()) {
+                mnViderPlayer.playVideo(url4, "标题4");
+            } else {
+                Toast.makeText(MainActivity.this, "文件不存在", Toast.LENGTH_SHORT).show();
+            }
         } else {
             //请求权限
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
@@ -164,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 100: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

@@ -28,7 +28,7 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 #### 2.在app目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     compile 'com.github.maning0303:MNVideoPlayer:V1.0.3'
+	     compile 'com.github.maning0303:MNVideoPlayer:V1.0.4'
 	}
 ```
 
@@ -44,7 +44,6 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:background="#363636"
-                app:mnFirstNeedPlay="false"     //true：初始化完成后立马播放
                 />
                 
 ```
@@ -81,6 +80,18 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
                     Toast.makeText(MainActivity.this, "当前网络不可用,检查网络设置", Toast.LENGTH_LONG).show();
                 }
             });
+
+            mnViderPlayer.setOnScreenOrientationListener(new OnScreenOrientationListener() {
+                @Override
+                public void orientation_landscape() {
+                    Toast.makeText(MainActivity.this, "横屏", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void orientation_portrait() {
+                    Toast.makeText(MainActivity.this, "竖屏", Toast.LENGTH_SHORT).show();
+                }
+             });
 
             //----------------------------------
             //第二次播放调用：
@@ -138,6 +149,10 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 
 
 ### 升级日志:
+
+#### V1.0.4:
+        1:修复已知问题,优化代码
+        2:去掉首次控制
 
 #### V1.0.3:
         1:修复已知问题,优化代码
