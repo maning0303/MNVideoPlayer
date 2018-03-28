@@ -33,8 +33,10 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="90dp"
-            android:layout_height="90dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="10dp"
             android:src="@drawable/mn_player_error"/>
 
         <TextView
@@ -43,7 +45,7 @@
             android:layout_marginTop="6dp"
             android:gravity="center"
             android:lineSpacingExtra="2dp"
-            android:text="加载出错...\n点击重新加载"
+            android:text="加载出错\n点击重新加载"
             android:textColor="#ffffff"
             android:textSize="14sp"/>
 
@@ -58,14 +60,14 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:src="@drawable/mn_player_progress_no_net"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:lineSpacingExtra="2dp"
             android:text="网络断开 \n 点击重新加载"
