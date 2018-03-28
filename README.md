@@ -28,7 +28,7 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 #### 2.在app目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     compile 'com.github.maning0303:MNVideoPlayer:V1.0.4'
+	     compile 'com.github.maning0303:MNVideoPlayer:V1.0.5'
 	}
 ```
 
@@ -149,6 +149,8 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 
 
 ### 升级日志:
+#### V1.0.5:
+        1:优化界面显示
 
 #### V1.0.4:
         1:修复已知问题,优化代码
