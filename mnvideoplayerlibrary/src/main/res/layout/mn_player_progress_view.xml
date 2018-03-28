@@ -33,16 +33,15 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:scaleType="fitCenter"
-            android:layout_marginBottom="10dp"
-            android:src="@drawable/mn_player_error"/>
+            android:background="@drawable/mn_player_error"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:lineSpacingExtra="2dp"
             android:text="加载出错\n点击重新加载"
