@@ -46,30 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
         initPlayer();
 
-        //请求权限:调节亮度
-        requestPermission();
-
-    }
-
-    private void requestPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.System.canWrite(this)) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("提示");
-                builder.setMessage("视频播放调节亮度需要申请权限");
-                builder.setNegativeButton("取消", null);
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,
-                                Uri.parse("package:" + getPackageName()));
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivityForResult(intent, 100);
-                    }
-                });
-                builder.show();
-            }
-        }
     }
 
     private void initViews() {
@@ -84,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         mnViderPlayer.setIsNeedNetChangeListen(true);       //设置网络监听
         //第一次进来先设置数据
         mnViderPlayer.setDataSource(url2, "标题");
-
         //播放完成监听
         mnViderPlayer.setOnCompletionListener(new OnCompletionListener() {
             @Override

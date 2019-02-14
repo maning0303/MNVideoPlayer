@@ -66,7 +66,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     private MediaPlayer mediaPlayer;
 
     //标记暂停和播放状态
-    private boolean isPlaying = true;
+    private boolean isPlaying = false;
 
     //地址
     private String videoPath;
@@ -844,26 +844,31 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                     .getStreamVolume(AudioManager.STREAM_MUSIC); // 获取当前值
             if (Math.abs(distanceY) > Math.abs(distanceX)) {// 纵向移动大于横向移动
                 // 亮度调大,注意横屏时的坐标体系,尽管左上角是原点，但横向向上滑动时distanceY为正
-                int mLight = LightnessControl.GetLightness((Activity) context);
-                if (mLight >= 0 && mLight <= 255) {
-                    if (distanceY >= PlayerUtils.dip2px(context, STEP_LIGHT)) {
-                        if (mLight > 245) {
-                            LightnessControl.SetLightness((Activity) context, 255);
-                        } else {
-                            LightnessControl.SetLightness((Activity) context, mLight + 10);
-                        }
-                    } else if (distanceY <= -PlayerUtils.dip2px(context, STEP_LIGHT)) {// 亮度调小
-                        if (mLight < 10) {
-                            LightnessControl.SetLightness((Activity) context, 0);
-                        } else {
-                            LightnessControl.SetLightness((Activity) context, mLight - 10);
-                        }
-                    }
-                } else if (mLight < 0) {
-                    LightnessControl.SetLightness((Activity) context, 0);
-                } else {
-                    LightnessControl.SetLightness((Activity) context, 255);
+                if (distanceY >= PlayerUtils.dip2px(context, STEP_LIGHT)) {
+                    LightnessControl.SetLightness((Activity) context, 10);
+                } else if (distanceY <= -PlayerUtils.dip2px(context, STEP_LIGHT)) {// 亮度调小
+                    LightnessControl.SetLightness((Activity) context, -10);
                 }
+//                int mLight = LightnessControl.GetLightness((Activity) context);
+//                if (mLight >= 0 && mLight <= 255) {
+//                    if (distanceY >= PlayerUtils.dip2px(context, STEP_LIGHT)) {
+//                        if (mLight > 245) {
+//                            LightnessControl.SetLightness((Activity) context, 255);
+//                        } else {
+//                            LightnessControl.SetLightness((Activity) context, mLight + 10);
+//                        }
+//                    } else if (distanceY <= -PlayerUtils.dip2px(context, STEP_LIGHT)) {// 亮度调小
+//                        if (mLight < 10) {
+//                            LightnessControl.SetLightness((Activity) context, 0);
+//                        } else {
+//                            LightnessControl.SetLightness((Activity) context, mLight - 10);
+//                        }
+//                    }
+//                } else if (mLight < 0) {
+//                    LightnessControl.SetLightness((Activity) context, 0);
+//                } else {
+//                    LightnessControl.SetLightness((Activity) context, 255);
+//                }
                 //获取当前亮度
                 int currentLight = LightnessControl.GetLightness((Activity) context);
                 int percentage = (currentLight * 100) / 255;
