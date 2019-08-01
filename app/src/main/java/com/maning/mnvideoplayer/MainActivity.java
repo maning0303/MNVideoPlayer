@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mnViderPlayer.setIsNeedBatteryListen(true);         //设置电量监听
         mnViderPlayer.setIsNeedNetChangeListen(true);       //设置网络监听
         //第一次进来先设置数据
-        mnViderPlayer.setDataSource(url4, "标题");
+        mnViderPlayer.setDataSource(url1, "标题");
         //播放完成监听
         mnViderPlayer.setOnCompletionListener(new OnCompletionListener() {
             @Override
