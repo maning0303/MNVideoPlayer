@@ -189,7 +189,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-            layoutParams.width = screenWidth - PlayerUtils.getStatusBarHeight(activity);
+            layoutParams.width = screenWidth;
             layoutParams.height = PlayerUtils.getScreenHeight(activity);
 
             setX(0);
