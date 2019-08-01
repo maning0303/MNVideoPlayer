@@ -3,7 +3,9 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 [![](https://jitpack.io/v/maning0303/MNVideoPlayer.svg)](https://jitpack.io/#maning0303/MNVideoPlayer)
 
 ## 注意：
-一个基础代码，还有很多不完善的地方，可以作为一个参考，代码不多，建议看看代码。
+一个基础代码，还有很多不完善的地方，只作为一个参考。
+一个基础代码，还有很多不完善的地方，只作为一个参考。
+一个基础代码，还有很多不完善的地方，只作为一个参考。
 
 ## 项目截图：
 
@@ -112,46 +114,10 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
             
 ```
 
-#### 2：注意事项:
-``` java
-
-             //1:亮度调节不了是权限问题
-             private void requestPermission() {
-                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                     if (!Settings.System.canWrite(this)) {
-                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                         builder.setTitle("提示");
-                         builder.setMessage("视频播放调节亮度需要申请权限");
-                         builder.setNegativeButton("取消", null);
-                         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                             @Override
-                             public void onClick(DialogInterface dialog, int which) {
-                                 Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,
-                                         Uri.parse("package:" + getPackageName()));
-                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                 startActivityForResult(intent, 100);
-                             }
-                         });
-                         builder.show();
-                     }
-                 }
-             }
-
-             //2:当按Home键或者跳转其他页面不销毁当前页面的时候,SufaceView看不见会被销毁,重新回来会重建,默认会自动接着播放。
-                 (当你不需要自动播放的时候,可以如下:)
-                  @Override
-                  protected void onPause() {
-                      super.onPause();
-                      //暂停
-                      mnViderPlayer.pauseVideo();
-                  }
-
-```
-
-
 ### 升级日志:
 #### V1.0.6:
-        1:修复首次播放异常
+        1:修复本地视频首次播放无画面问题
+        1:优化代码
 
 #### V1.0.5:
         1:优化界面显示

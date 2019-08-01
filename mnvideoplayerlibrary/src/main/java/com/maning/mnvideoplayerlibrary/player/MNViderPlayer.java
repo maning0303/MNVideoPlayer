@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -38,11 +39,15 @@ import com.maning.mnvideoplayerlibrary.R;
 import com.maning.mnvideoplayerlibrary.listener.OnCompletionListener;
 import com.maning.mnvideoplayerlibrary.listener.OnNetChangeListener;
 import com.maning.mnvideoplayerlibrary.listener.OnScreenOrientationListener;
+import com.maning.mnvideoplayerlibrary.permissions.OnPermission;
+import com.maning.mnvideoplayerlibrary.permissions.Permission;
+import com.maning.mnvideoplayerlibrary.permissions.XXPermissions;
 import com.maning.mnvideoplayerlibrary.utils.LightnessControl;
 import com.maning.mnvideoplayerlibrary.utils.PlayerUtils;
 import com.maning.mnvideoplayerlibrary.view.ProgressWheel;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -113,6 +118,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     private RelativeLayout mn_player_rl_progress;
     private ImageView mn_player_iv_lock;
     private LinearLayout mn_player_ll_error;
+    private TextView tv_error_content;
     private LinearLayout mn_player_ll_net;
     private ProgressWheel mn_player_progressBar;
     private ImageView mn_iv_battery;
@@ -218,6 +224,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         mn_player_rl_progress = (RelativeLayout) inflate.findViewById(R.id.mn_player_rl_progress);
         mn_player_iv_lock = (ImageView) inflate.findViewById(R.id.mn_player_iv_lock);
         mn_player_ll_error = (LinearLayout) inflate.findViewById(R.id.mn_player_ll_error);
+        tv_error_content = (TextView) inflate.findViewById(R.id.tv_error_content);
         mn_player_ll_net = (LinearLayout) inflate.findViewById(R.id.mn_player_ll_net);
         mn_player_progressBar = (ProgressWheel) inflate.findViewById(R.id.mn_player_progressBar);
         mn_iv_battery = (ImageView) inflate.findViewById(R.id.mn_iv_battery);
@@ -258,7 +265,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                     playerViewW = getWidth();
                     playerViewH = getHeight();
                 }
-                Log.e(">>>>>>>>>>>onGlobalLayout", "getWidth():" + getWidth());
             }
         });
     }
@@ -358,7 +364,24 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 }
             }
         } else if (i == R.id.mn_player_ll_error || i == R.id.mn_player_ll_net || i == R.id.mn_player_iv_play_center) {
-            playVideo(videoPath, videoTitle, 0);
+            if (!videoPath.startsWith("http") && !hasWritePermission()) {
+                XXPermissions.with(activity)
+                        .permission(Permission.Group.STORAGE)
+                        .request(new OnPermission() {
+
+                            @Override
+                            public void hasPermission(List<String> granted, boolean isAll) {
+                                playVideo(videoPath, videoTitle, video_position);
+                            }
+
+                            @Override
+                            public void noPermission(List<String> denied, boolean quick) {
+                                Toast.makeText(activity, "权限获取失败", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                playVideo(videoPath, videoTitle, video_position);
+            }
         }
     }
 
@@ -400,19 +423,27 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     }
 
     private void showErrorView() {
+        showErrorView("");
+    }
+
+    private void showErrorView(String errorMsg) {
         mn_player_iv_play_center.setVisibility(View.GONE);
         mn_player_ll_net.setVisibility(View.GONE);
         mn_player_progressBar.setVisibility(View.GONE);
-        mn_player_ll_error.setVisibility(View.VISIBLE);
         iv_video_thumbnail.setVisibility(View.GONE);
+        mn_player_ll_error.setVisibility(View.VISIBLE);
+        if (TextUtils.isEmpty(errorMsg)) {
+            errorMsg = "加载异常\n点击重新加载";
+        }
+        tv_error_content.setText(errorMsg);
     }
 
     private void showNoNetView() {
         mn_player_iv_play_center.setVisibility(View.GONE);
-        mn_player_ll_net.setVisibility(View.VISIBLE);
         mn_player_progressBar.setVisibility(View.GONE);
         mn_player_ll_error.setVisibility(View.GONE);
         iv_video_thumbnail.setVisibility(View.GONE);
+        mn_player_ll_net.setVisibility(View.VISIBLE);
     }
 
     private void setLandscape() {
@@ -544,24 +575,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         mediaPlayer.setOnBufferingUpdateListener(this);
         //第一次初始化需不需要主动播放
         if (isFirstPlay) {
-            //判断当前有没有网络（播放的是网络视频）
-            if (!PlayerUtils.isNetworkConnected(context) && videoPath.startsWith("http")) {
-                Toast.makeText(context, context.getString(R.string.mnPlayerNoNetHint), Toast.LENGTH_SHORT).show();
-                showNoNetView();
-            } else {
-                //手机网络给提醒
-                if (PlayerUtils.isMobileConnected(context)) {
-                    Toast.makeText(context, context.getString(R.string.mnPlayerMobileNetHint), Toast.LENGTH_SHORT).show();
-                }
-                //添加播放路径
-                try {
-                    mediaPlayer.setDataSource(videoPath);
-                    // 准备开始,异步准备，自动在子线程中
-                    mediaPlayer.prepareAsync();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            playVideo(videoPath, videoTitle);
         }
         isFirstPlay = true;
     }
@@ -625,7 +639,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         isPrepare = true;
         // 把得到的总长度和进度条的匹配
         mn_seekBar.setMax(mediaPlayer.getDuration());
-        mn_tv_time.setText(String.valueOf(PlayerUtils.converLongTimeToStr(mediaPlayer.getCurrentPosition()) + "/" + PlayerUtils.converLongTimeToStr(mediaPlayer.getDuration())));
+        mn_tv_time.setText(PlayerUtils.converLongTimeToStr(mediaPlayer.getCurrentPosition()) + "/" + PlayerUtils.converLongTimeToStr(mediaPlayer.getDuration()));
         //延时：避免出现上一个视频的画面闪屏
         myHandler.postDelayed(new Runnable() {
             @Override
@@ -854,8 +868,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             gesture_volume_layout.setVisibility(View.GONE);
             gesture_light_layout.setVisibility(View.VISIBLE);
             gesture_progress_layout.setVisibility(View.GONE);
-            currentVolume = audiomanager
-                    .getStreamVolume(AudioManager.STREAM_MUSIC); // 获取当前值
+            currentVolume = audiomanager.getStreamVolume(AudioManager.STREAM_MUSIC); // 获取当前值
             if (Math.abs(distanceY) > Math.abs(distanceX)) {// 纵向移动大于横向移动
                 // 亮度调大,注意横屏时的坐标体系,尽管左上角是原点，但横向向上滑动时distanceY为正
                 if (distanceY >= PlayerUtils.dip2px(context, STEP_LIGHT)) {
@@ -866,7 +879,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 //获取当前亮度
                 int currentLight = LightnessControl.GetLightness((Activity) context);
                 int percentage = (currentLight * 100) / 255;
-                geture_tv_light_percentage.setText(String.valueOf(percentage + "%"));
+                geture_tv_light_percentage.setText(percentage + "%");
             }
         }
         return false;
@@ -966,6 +979,12 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             Toast.makeText(context, context.getString(R.string.mnPlayerMobileNetHint), Toast.LENGTH_SHORT).show();
         }
 
+        //本地权限问题
+        if (!url.startsWith("http") && !hasWritePermission()) {
+            showErrorView("没有存储权限\n点击重新加载");
+            return;
+        }
+
         //重置MediaPlayer
         resetMediaPlayer();
 
@@ -983,6 +1002,11 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             unregisterNetReceiver();
         }
 
+    }
+
+    public boolean hasWritePermission() {
+        int perm = activity.checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE");
+        return perm == PackageManager.PERMISSION_GRANTED;
     }
 
     private void resetMediaPlayer() {
@@ -1239,7 +1263,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     public void setOnNetChangeListener(OnNetChangeListener onNetChangeListener) {
         this.onNetChangeListener = onNetChangeListener;
     }
-
 
     //-----------------------播放完回调
     private OnCompletionListener onCompletionListener;

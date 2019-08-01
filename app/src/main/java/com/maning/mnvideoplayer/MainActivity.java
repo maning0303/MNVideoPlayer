@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private final String url4 = "/storage/emulated/0/test.mp4";
 
     private MNViderPlayer mnViderPlayer;
+    private boolean isInit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         initViews();
 
         initPlayer();
-
     }
 
     private void initViews() {
@@ -53,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initPlayer() {
-
+        if (isInit) {
+            return;
+        }
+        isInit = true;
         //初始化相关参数(必须放在Play前面)
         mnViderPlayer.setWidthAndHeightProportion(16, 9);   //设置宽高比
         mnViderPlayer.setIsNeedBatteryListen(true);         //设置电量监听
@@ -165,11 +168,11 @@ public class MainActivity extends AppCompatActivity {
             case 100: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "存储权限申请成功", Toast.LENGTH_SHORT).show();
+                    initPlayer();
                 } else {
                     Toast.makeText(this, "存储权限申请失败", Toast.LENGTH_SHORT).show();
                 }
             }
-
         }
     }
 
