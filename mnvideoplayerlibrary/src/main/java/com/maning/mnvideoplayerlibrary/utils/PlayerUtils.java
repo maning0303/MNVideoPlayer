@@ -70,6 +70,21 @@ public class PlayerUtils {
     }
 
     /**
+     * 状态栏高度
+     *
+     * @param context
+     * @return
+     */
+    public static int getStatusBarHeight(Context context) {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    /**
      * 根据手机的分辨率�?dp 的单�?转成�?px(像素)
      */
     public static int dip2px(Context context, float dpValue) {
@@ -134,6 +149,7 @@ public class PlayerUtils {
 
     /**
      * 获取视频略缩图
+     *
      * @param url
      * @param width
      * @param height

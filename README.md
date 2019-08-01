@@ -39,12 +39,13 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 #### 1：布局文件添加
 ``` java
 
-            <com.maning.mnvideoplayerlibrary.player.MNViderPlayer
-                android:id="@+id/mn_videoplayer"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="#363636"
-                />
+           <com.maning.mnvideoplayerlibrary.player.MNViderPlayer
+                   android:id="@+id/mn_videoplayer"
+                   android:layout_width="match_parent"
+                   android:layout_height="200dp"
+                   android:background="#252525"
+                   //首次打开是否需要自动播放
+                   app:mnFirstNeedPlay="true" />
                 
 ```
 
@@ -149,6 +150,9 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 
 
 ### 升级日志:
+#### V1.0.6:
+        1:修复首次播放异常
+
 #### V1.0.5:
         1:优化界面显示
 

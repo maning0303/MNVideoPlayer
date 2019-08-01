@@ -24,6 +24,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -58,8 +59,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     private Context context;
     private Activity activity;
 
-    static final Handler myHandler = new Handler(Looper.getMainLooper()) {
-    };
+    static final Handler myHandler = new Handler(Looper.getMainLooper());
 
     // SurfaceView的创建比较耗时，要注意
     private SurfaceHolder surfaceHolder;
@@ -152,11 +152,17 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     }
 
     @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         int screenWidth = PlayerUtils.getScreenWidth(activity);
-        int screenHeight = PlayerUtils.getScreenHeight(activity);
+
         ViewGroup.LayoutParams layoutParams = getLayoutParams();
 
         //newConfig.orientation获得当前屏幕状态是横向或者竖向
@@ -176,8 +182,9 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         }
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            layoutParams.width = screenWidth;
-            layoutParams.height = screenHeight;
+
+            layoutParams.width = screenWidth - PlayerUtils.getStatusBarHeight(activity);
+            layoutParams.height = PlayerUtils.getScreenHeight(activity);
 
             setX(0);
             setY(0);
@@ -242,15 +249,18 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         initGesture();
 
         //存储控件的位置信息
-        myHandler.postDelayed(new Runnable() {
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void run() {
-                mediaPlayerX = getX();
-                mediaPlayerY = getY();
-                playerViewW = getWidth();
-                playerViewH = getHeight();
+            public void onGlobalLayout() {
+                if (playerViewW == 0) {
+                    mediaPlayerX = getX();
+                    mediaPlayerY = getY();
+                    playerViewW = getWidth();
+                    playerViewH = getHeight();
+                }
+                Log.e(">>>>>>>>>>>onGlobalLayout", "getWidth():" + getWidth());
             }
-        }, 1000);
+        });
     }
 
     private void initViews() {
@@ -644,14 +654,17 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         if (mediaPlayer == null) {
             return;
         }
+        if (playerViewW == 0) {
+            playerViewW = getWidth();
+            playerViewH = getHeight();
+        }
         //适配视频的高度
         int videoWidth = mediaPlayer.getVideoWidth();
         int videoHeight = mediaPlayer.getVideoHeight();
+        Log.e(">>>>>>>>", "videoWidth:" + videoWidth + ",videoHeight:" + videoHeight);
         int parentWidth = playerViewW;
         int parentHeight = playerViewH;
-        int screenWidth = PlayerUtils.getScreenWidth(activity);
-        int screenHeight = PlayerUtils.getScreenHeight(activity);
-
+        Log.e(">>>>>>>>", "parentWidth:" + parentWidth + ",parentHeight:" + parentHeight);
         //判断视频宽高和父布局的宽高
         int surfaceViewW;
         int surfaceViewH;
@@ -666,6 +679,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         ViewGroup.LayoutParams params = mn_player_surface_bg.getLayoutParams();
         params.height = surfaceViewH;
         params.width = surfaceViewW;
+        Log.e(">>>>>>>>", "surfaceViewW:" + surfaceViewW + ",surfaceViewH:" + surfaceViewH);
         mn_player_surface_bg.setLayoutParams(params);
     }
 
@@ -901,7 +915,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //赋值
         videoPath = url;
         videoTitle = title;
-//        setVideoThumbnail();
+        setVideoThumbnail();
     }
 
     /**
