@@ -21,9 +21,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.0.0'
-    implementation project(':mnvideoplayerlibrary')
+//    implementation project(':mnvideoplayerlibrary')
 
     //测试
-//    compile 'com.github.maning0303:MNVideoPlayer:V1.0.5'
+    implementation 'com.github.maning0303:MNVideoPlayer:V1.0.6'
 
 }
