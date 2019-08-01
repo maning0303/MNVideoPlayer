@@ -66,7 +66,9 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     private MediaPlayer mediaPlayer;
 
     //标记暂停和播放状态
-    private boolean isPlaying = false;
+    private boolean isPlaying = true;
+
+    private boolean isFirstPlay = false;
 
     //地址
     private String videoPath;
@@ -141,7 +143,9 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //遍历拿到自定义属性
         for (int i = 0; i < typedArray.getIndexCount(); i++) {
             int index = typedArray.getIndex(i);
-            //暂时不需要自定义属性
+            if (index == R.styleable.MNViderPlayer_mnFirstNeedPlay) {
+                isFirstPlay = typedArray.getBoolean(R.styleable.MNViderPlayer_mnFirstNeedPlay, false);
+            }
         }
         //销毁
         typedArray.recycle();
@@ -226,6 +230,11 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //初始化
         initViews();
 
+        if (!isFirstPlay) {
+            mn_player_iv_play_center.setVisibility(View.VISIBLE);
+            mn_player_progressBar.setVisibility(View.GONE);
+        }
+
         //初始化SurfaceView
         initSurfaceView();
 
@@ -240,8 +249,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 mediaPlayerY = getY();
                 playerViewW = getWidth();
                 playerViewH = getHeight();
-                Log.i(TAG, "控件信息---X：" + mediaPlayerX + "，Y：" + mediaPlayerY);
-                Log.i(TAG, "控件信息---playerViewW：" + playerViewW + "，playerViewH：" + playerViewH);
             }
         }, 1000);
     }
@@ -295,7 +302,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     }
 
     private void initSurfaceView() {
-        Log.i(TAG, "initSurfaceView");
         // 得到SurfaceView容器，播放的内容就是显示在这个容器里面
         surfaceHolder = mn_palyer_surfaceView.getHolder();
         surfaceHolder.setKeepScreenOn(true);
@@ -516,7 +522,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     //播放
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.i(TAG, "surfaceCreated");
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         mediaPlayer.setDisplay(holder); // 添加到容器中
@@ -527,29 +532,32 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //播放错误的监听
         mediaPlayer.setOnErrorListener(this);
         mediaPlayer.setOnBufferingUpdateListener(this);
-        //判断当前有没有网络（播放的是网络视频）
-        if (!PlayerUtils.isNetworkConnected(context) && videoPath.startsWith("http")) {
-            Toast.makeText(context, context.getString(R.string.mnPlayerNoNetHint), Toast.LENGTH_SHORT).show();
-            showNoNetView();
-        } else {
-            //手机网络给提醒
-            if (PlayerUtils.isMobileConnected(context)) {
-                Toast.makeText(context, context.getString(R.string.mnPlayerMobileNetHint), Toast.LENGTH_SHORT).show();
-            }
-            //添加播放路径
-            try {
-                mediaPlayer.setDataSource(videoPath);
-                // 准备开始,异步准备，自动在子线程中
-                mediaPlayer.prepareAsync();
-            } catch (IOException e) {
-                e.printStackTrace();
+        //第一次初始化需不需要主动播放
+        if (isFirstPlay) {
+            //判断当前有没有网络（播放的是网络视频）
+            if (!PlayerUtils.isNetworkConnected(context) && videoPath.startsWith("http")) {
+                Toast.makeText(context, context.getString(R.string.mnPlayerNoNetHint), Toast.LENGTH_SHORT).show();
+                showNoNetView();
+            } else {
+                //手机网络给提醒
+                if (PlayerUtils.isMobileConnected(context)) {
+                    Toast.makeText(context, context.getString(R.string.mnPlayerMobileNetHint), Toast.LENGTH_SHORT).show();
+                }
+                //添加播放路径
+                try {
+                    mediaPlayer.setDataSource(videoPath);
+                    // 准备开始,异步准备，自动在子线程中
+                    mediaPlayer.prepareAsync();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
+        isFirstPlay = true;
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Log.i(TAG, "surfaceChanged---width：" + width + ",height:" + height);
     }
 
     @Override
@@ -561,7 +569,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             video_position = mediaPlayer.getCurrentPosition();
         }
         destroyControllerTask(true);
-        Log.i(TAG, "surfaceDestroyed---video_position：" + video_position);
     }
 
     //MediaPlayer
@@ -578,7 +585,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        Log.i(TAG, "二级缓存onBufferingUpdate: " + percent);
+//        Log.i(TAG, "二级缓存onBufferingUpdate: " + percent);
         if (percent >= 0 && percent <= 100) {
             int secondProgress = mp.getDuration() * percent / 100;
             mn_seekBar.setSecondaryProgress(secondProgress);
@@ -587,7 +594,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
 
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
-        Log.i(TAG, "发生错误error:" + what);
+//        Log.i(TAG, "发生错误error:" + what);
         if (what != -38) {  //这个错误不管
             showErrorView();
         }
@@ -655,13 +662,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             surfaceViewH = parentHeight;
             surfaceViewW = videoWidth * parentHeight / videoHeight;
         }
-
-        Log.i(TAG, "fitVideoSize---" +
-                "videoWidth：" + videoWidth + ",videoHeight:" + videoHeight +
-                ",parentWidth:" + parentWidth + ",parentHeight:" + parentHeight +
-                ",screenWidth:" + screenWidth + ",screenHeight:" + screenHeight +
-                ",surfaceViewW:" + surfaceViewW + ",surfaceViewH:" + surfaceViewH
-        );
         //改变surfaceView的大小
         ViewGroup.LayoutParams params = mn_player_surface_bg.getLayoutParams();
         params.height = surfaceViewH;
@@ -849,26 +849,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 } else if (distanceY <= -PlayerUtils.dip2px(context, STEP_LIGHT)) {// 亮度调小
                     LightnessControl.SetLightness((Activity) context, -10);
                 }
-//                int mLight = LightnessControl.GetLightness((Activity) context);
-//                if (mLight >= 0 && mLight <= 255) {
-//                    if (distanceY >= PlayerUtils.dip2px(context, STEP_LIGHT)) {
-//                        if (mLight > 245) {
-//                            LightnessControl.SetLightness((Activity) context, 255);
-//                        } else {
-//                            LightnessControl.SetLightness((Activity) context, mLight + 10);
-//                        }
-//                    } else if (distanceY <= -PlayerUtils.dip2px(context, STEP_LIGHT)) {// 亮度调小
-//                        if (mLight < 10) {
-//                            LightnessControl.SetLightness((Activity) context, 0);
-//                        } else {
-//                            LightnessControl.SetLightness((Activity) context, mLight - 10);
-//                        }
-//                    }
-//                } else if (mLight < 0) {
-//                    LightnessControl.SetLightness((Activity) context, 0);
-//                } else {
-//                    LightnessControl.SetLightness((Activity) context, 255);
-//                }
                 //获取当前亮度
                 int currentLight = LightnessControl.GetLightness((Activity) context);
                 int percentage = (currentLight * 100) / 255;
@@ -921,8 +901,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //赋值
         videoPath = url;
         videoTitle = title;
-
-        setVideoThumbnail();
+//        setVideoThumbnail();
     }
 
     /**

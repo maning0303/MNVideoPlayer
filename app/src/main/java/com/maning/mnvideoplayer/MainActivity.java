@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "当前网络不可用,检查网络设置", Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     public void btn01(View view) {
