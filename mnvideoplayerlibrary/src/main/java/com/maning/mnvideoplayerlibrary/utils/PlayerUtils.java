@@ -2,14 +2,21 @@ package com.maning.mnvideoplayerlibrary.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.WindowManager;
 
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,10 +58,16 @@ public class PlayerUtils {
      * @return 宽度
      */
     public static int getScreenWidth(Activity activity) {
-        DisplayMetrics dm = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int screenWidth = dm.widthPixels;
-        return screenWidth;
+        WindowManager wm = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
+        Point point = new Point();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            //noinspection ConstantConditions
+            wm.getDefaultDisplay().getRealSize(point);
+        } else {
+            //noinspection ConstantConditions
+            wm.getDefaultDisplay().getSize(point);
+        }
+        return point.x;
     }
 
     /**
@@ -63,10 +76,16 @@ public class PlayerUtils {
      * @return 高度
      */
     public static int getScreenHeight(Activity activity) {
-        DisplayMetrics dm = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int screenHeight = dm.heightPixels;
-        return screenHeight;
+        WindowManager wm = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
+        Point point = new Point();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            //noinspection ConstantConditions
+            wm.getDefaultDisplay().getRealSize(point);
+        } else {
+            //noinspection ConstantConditions
+            wm.getDefaultDisplay().getSize(point);
+        }
+        return point.y;
     }
 
     /**
@@ -181,5 +200,59 @@ public class PlayerUtils {
         return bitmap;
     }
 
+
+    /**
+     * 判断虚拟导航栏是否显示
+     *
+     * @param context 上下文对象
+     * @return true(显示虚拟导航栏)，false(不显示或不支持虚拟导航栏)
+     */
+    public static boolean checkNavigationBarShow(@NonNull Context context) {
+        boolean hasNavigationBar = false;
+        Resources rs = context.getResources();
+        int id = rs.getIdentifier("config_showNavigationBar", "bool", "android");
+        if (id > 0) {
+            hasNavigationBar = rs.getBoolean(id);
+        }
+        try {
+            Class systemPropertiesClass = Class.forName("android.os.SystemProperties");
+            Method m = systemPropertiesClass.getMethod("get", String.class);
+            String navBarOverride = (String) m.invoke(systemPropertiesClass, "qemu.hw.mainkeys");
+            //判断是否隐藏了底部虚拟导航
+            int navigationBarIsMin = 0;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                navigationBarIsMin = Settings.System.getInt(context.getContentResolver(),
+                        "navigationbar_is_min", 0);
+            } else {
+                navigationBarIsMin = Settings.Global.getInt(context.getContentResolver(),
+                        "navigationbar_is_min", 0);
+            }
+            if ("1".equals(navBarOverride) || 1 == navigationBarIsMin) {
+                hasNavigationBar = false;
+            } else if ("0".equals(navBarOverride)) {
+                hasNavigationBar = true;
+            }
+        } catch (Exception e) {
+        }
+        return hasNavigationBar;
+    }
+
+
+    /**
+     * 隐藏虚拟按键，并且全屏
+     */
+    public static void hideBottomUIMenu(Activity activity) {
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            View v = activity.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = activity.getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+
+    }
 
 }

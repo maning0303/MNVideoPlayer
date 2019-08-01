@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorPlayerTrans">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPlayerTrans">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,8 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:scaleType="fitCenter"
-            />
+            android:scaleType="fitCenter" />
 
         <LinearLayout
             android:id="@+id/mn_player_surface_bg"
@@ -28,12 +27,11 @@
             <SurfaceView
                 android:id="@+id/mn_palyer_surfaceView"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
-        <include layout="@layout/mn_player_progress_view"/>
+        <include layout="@layout/mn_player_progress_view" />
 
     </RelativeLayout>
 
@@ -43,6 +41,8 @@
         android:layout_height="44dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/mn_palyer_bar_bottom"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:visibility="visible">
 
         <ImageView
@@ -50,7 +50,7 @@
             android:layout_width="50dp"
             android:layout_height="24dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/mn_player_play"/>
+            android:src="@drawable/mn_player_play" />
 
         <ImageView
             android:id="@+id/mn_iv_fullScreen"
@@ -58,7 +58,7 @@
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/mn_player_ic_fullscreen"/>
+            android:src="@drawable/mn_player_ic_fullscreen" />
 
         <TextView
             android:id="@+id/mn_tv_time"
@@ -67,7 +67,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/mn_iv_fullScreen"
             android:text="00:00 / 00:00"
-            android:textColor="@color/colorPlayerWhite"/>
+            android:textColor="@color/colorPlayerWhite" />
 
         <SeekBar
             android:id="@+id/mn_seekBar"
@@ -85,7 +85,7 @@
             android:paddingRight="16dp"
             android:progressDrawable="@drawable/mn_player_progress_diy"
             android:thumb="@drawable/mn_player_thumb"
-            android:thumbOffset="6dp"/>
+            android:thumbOffset="6dp" />
 
     </RelativeLayout>
 
@@ -95,14 +95,15 @@
         android:layout_height="44dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/mn_palyer_bar_top"
-        >
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <ImageView
             android:id="@+id/mn_iv_back"
             android:layout_width="50dp"
             android:layout_height="24dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/mn_player_back"/>
+            android:src="@drawable/mn_player_back" />
 
         <TextView
             android:id="@+id/mn_tv_system_time"
@@ -114,7 +115,7 @@
             android:layout_marginRight="20dp"
             android:text="00:00"
             android:textColor="@color/colorPlayerWhite"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
         <ImageView
             android:id="@+id/mn_iv_battery"
@@ -125,7 +126,7 @@
             android:layout_toLeftOf="@id/mn_tv_system_time"
             android:paddingBottom="3dp"
             android:src="@drawable/mn_player_battery_05"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/mn_tv_title"
@@ -139,7 +140,7 @@
             android:singleLine="true"
             android:text=""
             android:textColor="@color/colorPlayerWhite"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
     </RelativeLayout>
 
@@ -152,12 +153,12 @@
         android:background="@drawable/mn_palyer_black_circle"
         android:padding="10dp"
         android:src="@drawable/mn_player_landscape_screen_lock_open"
-        android:visibility="visible"/>
+        android:visibility="visible" />
 
-    <include layout="@layout/mn_gesture_volume_layout"/>
+    <include layout="@layout/mn_gesture_volume_layout" />
 
-    <include layout="@layout/mn_gesture_light_layout"/>
+    <include layout="@layout/mn_gesture_light_layout" />
 
-    <include layout="@layout/mn_gesture_progress_layout"/>
+    <include layout="@layout/mn_gesture_progress_layout" />
 
 </RelativeLayout>

@@ -8,22 +8,31 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -47,6 +56,7 @@ import com.maning.mnvideoplayerlibrary.utils.PlayerUtils;
 import com.maning.mnvideoplayerlibrary.view.ProgressWheel;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -187,11 +197,14 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             }
         }
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-            layoutParams.width = screenWidth;
+            activity.getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            if (PlayerUtils.checkNavigationBarShow(activity)) {
+                PlayerUtils.hideBottomUIMenu(activity);
+            }
+            layoutParams.width = screenWidth - PlayerUtils.getStatusBarHeight(activity);
             layoutParams.height = PlayerUtils.getScreenHeight(activity);
-
             setX(0);
             setY(0);
             //横屏通知
@@ -207,6 +220,34 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //适配大小
         fitVideoSize();
     }
+
+    //获取屏幕原始尺寸高度，包括虚拟功能键高度
+    public static int getDpi(Context context) {
+        int dpi = 0;
+        WindowManager windowManager = (WindowManager)
+                context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        @SuppressWarnings("rawtypes")
+        Class c;
+        try {
+            c = Class.forName("android.view.Display");
+            @SuppressWarnings("unchecked")
+            Method method = c.getMethod("getRealMetrics", DisplayMetrics.class);
+            method.invoke(display, displayMetrics);
+            dpi = displayMetrics.widthPixels;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dpi;
+    }
+
+    //获取屏幕高度 不包含虚拟按键
+    public static int getScreenWidth(Context context) {
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        return dm.widthPixels;
+    }
+
 
     //初始化
     private void init() {
