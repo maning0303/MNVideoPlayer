@@ -24,6 +24,6 @@ dependencies {
     implementation project(':mnvideoplayerlibrary')
 
     //测试
-//    implementation 'com.github.maning0303:MNVideoPlayer:V1.0.8'
+//    implementation 'com.github.maning0303:MNVideoPlayer:V1.0.9'
 
 }
