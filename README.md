@@ -11,10 +11,13 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 
 ## 项目截图：
 
-![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/001.png)
-![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/002.png)
-![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/003.jpg)
-![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/004.jpg)
+![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/videoplay_001.png)
+
+![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/videoplay_002.png)
+
+![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/videoplay_003.png)
+
+![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/videoplay_004.png)
 
 
 ## 如何添加

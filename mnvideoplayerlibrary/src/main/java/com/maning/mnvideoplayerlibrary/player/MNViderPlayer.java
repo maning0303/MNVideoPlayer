@@ -39,6 +39,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -743,9 +744,11 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     //--------------------------------------------------------------------------------------
     private RelativeLayout gesture_volume_layout;// 音量控制布局
     private TextView geture_tv_volume_percentage;// 音量百分比
+    private ProgressBar geture_tv_volume_percentage_progress;// 音量百分比
     private ImageView gesture_iv_player_volume;// 音量图标
     private RelativeLayout gesture_light_layout;// 亮度布局
     private TextView geture_tv_light_percentage;// 亮度百分比
+    private ProgressBar geture_tv_light_percentageProgress;// 亮度百分比
     private RelativeLayout gesture_progress_layout;// 进度图标
     private TextView geture_tv_progress_time;// 播放时间进度
     private ImageView gesture_iv_progress;// 快进或快退标志
@@ -763,6 +766,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     private void initGesture() {
         gesture_volume_layout = (RelativeLayout) findViewById(R.id.mn_gesture_volume_layout);
         geture_tv_volume_percentage = (TextView) findViewById(R.id.mn_gesture_tv_volume_percentage);
+        geture_tv_volume_percentage_progress = (ProgressBar) findViewById(R.id.mn_gesture_tv_volume_percentage_progress);
         gesture_iv_player_volume = (ImageView) findViewById(R.id.mn_gesture_iv_player_volume);
 
         gesture_progress_layout = (RelativeLayout) findViewById(R.id.mn_gesture_progress_layout);
@@ -772,6 +776,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //亮度的布局
         gesture_light_layout = (RelativeLayout) findViewById(R.id.mn_gesture_light_layout);
         geture_tv_light_percentage = (TextView) findViewById(R.id.mn_geture_tv_light_percentage);
+        geture_tv_light_percentageProgress = (ProgressBar) findViewById(R.id.mn_geture_tv_light_percentage_progress);
 
         gesture_volume_layout.setVisibility(View.GONE);
         gesture_progress_layout.setVisibility(View.GONE);
@@ -880,8 +885,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             gesture_volume_layout.setVisibility(View.VISIBLE);
             gesture_light_layout.setVisibility(View.GONE);
             gesture_progress_layout.setVisibility(View.GONE);
-            currentVolume = audiomanager
-                    .getStreamVolume(AudioManager.STREAM_MUSIC); // 获取当前值
+            currentVolume = audiomanager.getStreamVolume(AudioManager.STREAM_MUSIC); // 获取当前值
             if (Math.abs(distanceY) > Math.abs(distanceX)) {// 纵向移动大于横向移动
                 if (currentVolume == 0) {// 静音，设定静音独有的图片
                     gesture_iv_player_volume.setImageResource(R.drawable.mn_player_volume_close);
@@ -901,6 +905,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 }
                 int percentage = (currentVolume * 100) / maxVolume;
                 geture_tv_volume_percentage.setText(String.valueOf(percentage + "%"));
+                geture_tv_volume_percentage_progress.setProgress(percentage);
                 audiomanager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
             }
         }
@@ -921,6 +926,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 int currentLight = LightnessControl.GetLightness((Activity) context);
                 int percentage = (currentLight * 100) / 255;
                 geture_tv_light_percentage.setText(percentage + "%");
+                geture_tv_light_percentageProgress.setProgress(percentage);
             }
         }
         return false;

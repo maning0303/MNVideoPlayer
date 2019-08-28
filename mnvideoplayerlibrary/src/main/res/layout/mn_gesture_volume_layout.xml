@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mn_gesture_volume_layout"
-    android:layout_width="80dp"
-    android:layout_height="80dp"
-    android:layout_centerInParent="true"
+    android:layout_width="wrap_content"
+    android:layout_height="36dp"
+    android:layout_centerHorizontal="true"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="20dp"
     android:background="@drawable/mn_palyer_black_bg"
     android:gravity="center"
+    android:paddingLeft="14dp"
+    android:paddingRight="12dp"
     android:visibility="visible">
 
     <ImageView
         android:id="@+id/mn_gesture_iv_player_volume"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_centerHorizontal="true"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="6dp"
         android:src="@drawable/mn_player_volume_open" />
 
     <TextView
@@ -25,5 +31,20 @@
         android:gravity="right"
         android:text="80%"
         android:textColor="#ffececec"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/mn_gesture_tv_volume_percentage_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="140dp"
+        android:layout_height="4dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/mn_gesture_iv_player_volume"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/mn_player_progressbar"
+        android:visibility="visible"
+        tools:progress="90" />
+
 </RelativeLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--播放器相关颜色-->
-    <color name="colorPlayerBlackTrans">#bb000000</color>
+    <color name="colorPlayerBlackTrans">#A4000000</color>
     <color name="colorPlayerWhite">#FFFFFF</color>
     <!--进度条的颜色-->
     <color name="colorPlayerProgressBg">#e1767676</color>

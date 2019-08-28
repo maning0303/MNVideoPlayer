@@ -17,6 +17,10 @@ public class LightnessControl {
     public static void SetLightness(Activity act, int value) {
         try {
             WindowManager.LayoutParams lp = act.getWindow().getAttributes();
+            Log.e(">>>>>>>>>", "lp.screenBrightness:" + lp.screenBrightness);
+            if (lp.screenBrightness == -1.0) {
+                lp.screenBrightness = 0.5f;
+            }
             lp.screenBrightness = lp.screenBrightness + value / 255.0f;
             if (lp.screenBrightness > 1) {
                 lp.screenBrightness = 1;
