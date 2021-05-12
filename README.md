@@ -53,7 +53,7 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
                    android:layout_height="200dp"
                    android:background="#252525"
                    //首次打开是否需要自动播放
-                   app:mnFirstNeedPlay="true" />
+                   app:mnVideo_autoPlay="true" />
                 
 ```
 

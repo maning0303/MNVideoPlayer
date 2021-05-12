@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //第一次进来先设置数据
-        mnViderPlayer.setDataSource(url1);
+        mnViderPlayer.setDataSource(url1,"标题1");
     }
 
     public void btn01(View view) {

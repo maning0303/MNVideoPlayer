@@ -952,15 +952,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     /**
      * 设置视频信息
      *
-     * @param url 视频地址
-     */
-    public void setDataSource(String url) {
-        setDataSource(url, "");
-    }
-
-    /**
-     * 设置视频信息
-     *
      * @param url   视频地址
      * @param title 视频标题
      */
