@@ -15,8 +15,8 @@
     </declare-styleable>
 
     <declare-styleable name="MNViderPlayer">
-        <!--第一次进入时默认播放还是默认不播放-->
-        <attr name="mnFirstNeedPlay" format="boolean" />
+        <!--自动播放-->
+        <attr name="mnVideo_autoPlay" format="boolean" />
     </declare-styleable>
 
 </resources>

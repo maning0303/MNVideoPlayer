@@ -14,6 +14,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -71,9 +72,9 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     private MediaPlayer mediaPlayer;
 
     //标记暂停和播放状态
-    private boolean isPlaying = true;
-
-    private boolean isFirstPlay = false;
+    private boolean isPlaying = false;
+    //自动播放
+    private boolean autoPlay = true;
 
     //地址
     private String videoPath;
@@ -149,8 +150,8 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //遍历拿到自定义属性
         for (int i = 0; i < typedArray.getIndexCount(); i++) {
             int index = typedArray.getIndex(i);
-            if (index == R.styleable.MNViderPlayer_mnFirstNeedPlay) {
-                isFirstPlay = typedArray.getBoolean(R.styleable.MNViderPlayer_mnFirstNeedPlay, false);
+            if (index == R.styleable.MNViderPlayer_mnVideo_autoPlay) {
+                autoPlay = typedArray.getBoolean(R.styleable.MNViderPlayer_mnVideo_autoPlay, true);
             }
         }
         //销毁
@@ -275,7 +276,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //初始化
         initViews();
 
-        if (!isFirstPlay) {
+        if (!autoPlay) {
             mn_player_iv_play_center.setVisibility(View.VISIBLE);
             mn_player_progressBar.setVisibility(View.GONE);
         }
@@ -298,6 +299,20 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 }
             }
         });
+
+        //判断广播相关
+        if (isNeedBatteryListen) {
+            registerBatteryReceiver();
+        } else {
+            unRegisterBatteryReceiver();
+            mn_iv_battery.setVisibility(View.GONE);
+        }
+        //网络监听的广播
+        if (isNeedNetChangeListen) {
+            registerNetReceiver();
+        } else {
+            unregisterNetReceiver();
+        }
     }
 
     private void initViews() {
@@ -315,6 +330,9 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         mn_player_ll_net.setVisibility(View.GONE);
         mn_player_iv_play_center.setVisibility(View.GONE);
         initTopMenu();
+
+        mn_player_iv_play_center.setVisibility(View.VISIBLE);
+        mn_player_progressBar.setVisibility(View.GONE);
 
     }
 
@@ -587,11 +605,12 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         //播放错误的监听
         mediaPlayer.setOnErrorListener(this);
         mediaPlayer.setOnBufferingUpdateListener(this);
+
         //第一次初始化需不需要主动播放
-        if (isFirstPlay) {
+        if (autoPlay) {
             playVideo(videoPath, videoTitle);
+            autoPlay = true;
         }
-        isFirstPlay = true;
     }
 
     @Override
@@ -641,16 +660,14 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
 
     @Override
     public void onPrepared(final MediaPlayer mediaPlayer) {
+        //恢复显示,隐藏列缩图
+        mn_palyer_surfaceView.setAlpha(1);
+        iv_video_thumbnail.setVisibility(View.GONE);
 
-        mediaPlayer.start(); // 开始播放
-        //是否开始播放
-        if (!isPlaying) {
-            mediaPlayer.pause();
-            mn_iv_play_pause.setImageResource(R.drawable.mn_player_play);
-        } else {
-            mn_iv_play_pause.setImageResource(R.drawable.mn_player_pause);
-        }
+        mediaPlayer.start();
+        mn_iv_play_pause.setImageResource(R.drawable.mn_player_pause);
         isPrepare = true;
+        isPlaying = true;
         // 把得到的总长度和进度条的匹配
         mn_seekBar.setMax(mediaPlayer.getDuration());
         mn_tv_time.setText(PlayerUtils.converLongTimeToStr(mediaPlayer.getCurrentPosition()) + "/" + PlayerUtils.converLongTimeToStr(mediaPlayer.getDuration()));
@@ -671,11 +688,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         }, 500);
         //适配大小
         fitVideoSize();
-
-        //恢复显示,隐藏列缩图
-        mn_palyer_surfaceView.setAlpha(1);
-        iv_video_thumbnail.setVisibility(View.GONE);
-
     }
 
     private void fitVideoSize() {
@@ -991,7 +1003,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
         videoTitle = title;
         video_position = position;
         isPrepare = false;
-        isPlaying = true;
 
         //初始化View
         initViews();
@@ -1015,21 +1026,6 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
 
         //重置MediaPlayer
         resetMediaPlayer();
-
-        //判断广播相关
-        if (isNeedBatteryListen) {
-            registerBatteryReceiver();
-        } else {
-            unRegisterBatteryReceiver();
-            mn_iv_battery.setVisibility(View.GONE);
-        }
-        //网络监听的广播
-        if (isNeedNetChangeListen) {
-            registerNetReceiver();
-        } else {
-            unregisterNetReceiver();
-        }
-
     }
 
     public boolean hasWritePermission() {
@@ -1051,7 +1047,9 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
                 // 准备开始,异步准备，自动在子线程中
                 mediaPlayer.prepareAsync();
                 //视频缩放模式
-                mediaPlayer.setVideoScalingMode(android.media.MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    mediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+                }
             } else {
                 //TODO:播放器初始化失败后怎么操作
                 Toast.makeText(context, "播放器初始化失败", Toast.LENGTH_SHORT).show();
