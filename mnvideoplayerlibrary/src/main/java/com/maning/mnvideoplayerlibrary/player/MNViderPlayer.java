@@ -8,31 +8,24 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
-import android.view.KeyCharacterMap;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -49,16 +42,11 @@ import com.maning.mnvideoplayerlibrary.R;
 import com.maning.mnvideoplayerlibrary.listener.OnCompletionListener;
 import com.maning.mnvideoplayerlibrary.listener.OnNetChangeListener;
 import com.maning.mnvideoplayerlibrary.listener.OnScreenOrientationListener;
-import com.maning.mnvideoplayerlibrary.permissions.OnPermission;
-import com.maning.mnvideoplayerlibrary.permissions.Permission;
-import com.maning.mnvideoplayerlibrary.permissions.XXPermissions;
 import com.maning.mnvideoplayerlibrary.utils.LightnessControl;
 import com.maning.mnvideoplayerlibrary.utils.PlayerUtils;
 import com.maning.mnvideoplayerlibrary.view.ProgressWheel;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -407,20 +395,7 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
             }
         } else if (i == R.id.mn_player_ll_error || i == R.id.mn_player_ll_net || i == R.id.mn_player_iv_play_center) {
             if (!videoPath.startsWith("http") && !hasWritePermission()) {
-                XXPermissions.with(activity)
-                        .permission(Permission.Group.STORAGE)
-                        .request(new OnPermission() {
-
-                            @Override
-                            public void hasPermission(List<String> granted, boolean isAll) {
-                                playVideo(videoPath, videoTitle, video_position);
-                            }
-
-                            @Override
-                            public void noPermission(List<String> denied, boolean quick) {
-                                Toast.makeText(activity, "权限获取失败", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                Toast.makeText(activity, "缺少存储权限，播放失败", Toast.LENGTH_SHORT).show();
             } else {
                 playVideo(videoPath, videoTitle, video_position);
             }

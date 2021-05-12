@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.maning.mnvideoplayer"
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 3
         versionName "1.0.1"
     }
@@ -16,11 +16,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    // 支持 JDK 1.8
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.0.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.github.getActivity:XXPermissions:10.8'
+    implementation 'com.blankj:utilcodex:1.30.6'
+
     implementation project(':mnvideoplayerlibrary')
 
     //测试

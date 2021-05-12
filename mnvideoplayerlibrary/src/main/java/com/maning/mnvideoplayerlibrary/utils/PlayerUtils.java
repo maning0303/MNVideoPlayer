@@ -11,8 +11,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.util.DisplayMetrics;
+import androidx.annotation.NonNull;
+
 import android.view.View;
 import android.view.WindowManager;
 

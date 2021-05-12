@@ -1,39 +1,32 @@
 package com.maning.mnvideoplayer;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.hjq.permissions.OnPermissionCallback;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
 import com.maning.mnvideoplayerlibrary.listener.OnCompletionListener;
 import com.maning.mnvideoplayerlibrary.listener.OnNetChangeListener;
 import com.maning.mnvideoplayerlibrary.listener.OnScreenOrientationListener;
 import com.maning.mnvideoplayerlibrary.player.MNViderPlayer;
 
 import java.io.File;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MNViderPlayer";
 
-    private final String url1 = "http://mp4.vjshi.com/2016-12-22/e54d476ad49891bd1adda49280a20692.mp4";
-    private final String url2 = "http://mp4.vjshi.com/2016-12-22/e54d476ad49891bd1adda49280a20692.mp4";
+    private final String url1 = "http://vfx.mtime.cn/Video/2019/03/19/mp4/190319125415785691.mp4";
+    private final String url2 = "http://vfx.mtime.cn/Video/2019/03/19/mp4/190319125415785691.mp4";
     //这个地址是错误的
-    private final String url3 = "http://weibo.com/p/23044451f0e5c4b762b9e1aa49c3091eea4d94";
-    //本地视频
-    private final String url4 = "/storage/emulated/0/test.mp4";
+    private final String url3 = "http://weibo.com/xxxx";
 
     private MNViderPlayer mnViderPlayer;
     private boolean isInit = false;
@@ -44,8 +37,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initViews();
-
+        initPermission();
         initPlayer();
+    }
+
+    private void initPermission() {
+        XXPermissions.with(this)
+                .permission(Permission.WRITE_EXTERNAL_STORAGE)
+                .request(new OnPermissionCallback() {
+                    @Override
+                    public void onGranted(List<String> permissions, boolean all) {
+
+                    }
+                });
     }
 
     private void initViews() {
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         mnViderPlayer.setIsNeedBatteryListen(true);         //设置电量监听
         mnViderPlayer.setIsNeedNetChangeListen(true);       //设置网络监听
         //第一次进来先设置数据
-        mnViderPlayer.setDataSource(url1, "标题");
+        mnViderPlayer.setDataSource(url1, "标题1");
         //播放完成监听
         mnViderPlayer.setOnCompletionListener(new OnCompletionListener() {
             @Override
@@ -107,26 +111,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void btn02(View view) {
         //position表示需要跳转到的位置
-        mnViderPlayer.playVideo(url2, "标题2", 30000);
+        mnViderPlayer.playVideo(url2, "标题2", 30 * 1000);
     }
 
     public void btn03(View view) {
-        mnViderPlayer.playVideo(url3, "标题3");
+        mnViderPlayer.playVideo(url3, "错误的播放地址");
     }
 
     public void btn04(View view) {
-        if (hasPermission(this, "android.permission.WRITE_EXTERNAL_STORAGE")) {
-            //判断本地有没有这个文件
-            File file = new File(url4);
-            if (file.exists()) {
-                mnViderPlayer.playVideo(url4, "标题4");
-            } else {
-                Toast.makeText(MainActivity.this, "文件不存在", Toast.LENGTH_SHORT).show();
-            }
+        String name = "local_video.mp4";
+        String path = getExternalCacheDir().getPath();
+        String url_local = path + "/" + name;
+        //判断本地有没有这个文件
+        File file = new File(url_local);
+        if (file.exists()) {
+            mnViderPlayer.playVideo(url_local, "本地视频播放");
         } else {
-            //请求权限
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
-            Toast.makeText(this, "没有存储权限", Toast.LENGTH_SHORT).show();
+            Utils.copy(this, name, path, name);
+            mnViderPlayer.playVideo(url_local, "本地视频播放");
         }
     }
 
@@ -154,26 +156,6 @@ public class MainActivity extends AppCompatActivity {
             mnViderPlayer = null;
         }
         super.onDestroy();
-    }
-
-
-    public boolean hasPermission(Context context, String permission) {
-        int perm = context.checkCallingOrSelfPermission(permission);
-        return perm == PackageManager.PERMISSION_GRANTED;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 100: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "存储权限申请成功", Toast.LENGTH_SHORT).show();
-                    initPlayer();
-                } else {
-                    Toast.makeText(this, "存储权限申请失败", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
     }
 
 }
