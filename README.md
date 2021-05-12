@@ -14,9 +14,12 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 
 <div align="center">
 <img src = "screenshots/videoplay_001.png" width=200 >
-<img src = "screenshots/videoplay_002.png" width=200 >
-<img src = "screenshots/videoplay_003.png" width=200 >
-<img src = "screenshots/videoplay_004.png" width=200 >
+</div>
+
+<div align="center">
+<img src = "screenshots/videoplay_002.png" width=400 >
+<img src = "screenshots/videoplay_003.png" width=400 >
+<img src = "screenshots/videoplay_004.png" width=400 >
 </div>
 
 
