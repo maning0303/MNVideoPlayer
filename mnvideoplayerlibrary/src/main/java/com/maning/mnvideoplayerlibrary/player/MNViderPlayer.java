@@ -43,6 +43,7 @@ import com.maning.mnvideoplayerlibrary.listener.OnCompletionListener;
 import com.maning.mnvideoplayerlibrary.listener.OnNetChangeListener;
 import com.maning.mnvideoplayerlibrary.listener.OnScreenOrientationListener;
 import com.maning.mnvideoplayerlibrary.utils.LightnessControl;
+import com.maning.mnvideoplayerlibrary.utils.MediaUtils;
 import com.maning.mnvideoplayerlibrary.utils.PlayerUtils;
 import com.maning.mnvideoplayerlibrary.view.ProgressWheel;
 
@@ -319,23 +320,19 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
 
     private void setVideoThumbnail() {
         if (PlayerUtils.isNetworkConnected(context)) {
-            new Thread(new Runnable() {
+            MediaUtils.getImageForVideo(getContext(), videoPath, new MediaUtils.OnLoadVideoImageListener() {
                 @Override
-                public void run() {
-                    final Bitmap videoThumbnail = PlayerUtils.createVideoThumbnail(videoPath, getWidth(), getHeight());
-                    myHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (videoThumbnail != null) {
-                                iv_video_thumbnail.setVisibility(View.VISIBLE);
-                                iv_video_thumbnail.setImageBitmap(videoThumbnail);
-                            } else {
-                                iv_video_thumbnail.setVisibility(View.GONE);
-                            }
-                        }
-                    });
+                public void onLoadImage(MediaUtils.VideoInfoBean videoInfoBean) {
+                    if (videoInfoBean != null && videoInfoBean.bitmap != null) {
+                        Log.e(">>>>>>", "getImageForVideo-videoInfoBean:" + videoInfoBean.toString());
+                        iv_video_thumbnail.setVisibility(View.VISIBLE);
+                        iv_video_thumbnail.setImageBitmap(videoInfoBean.bitmap);
+                    } else {
+                        Log.e(">>>>>>", "getImageForVideo-videoInfoBean:" + null);
+                        iv_video_thumbnail.setVisibility(View.GONE);
+                    }
                 }
-            }).start();
+            });
         }
     }
 
@@ -938,6 +935,15 @@ public class MNViderPlayer extends FrameLayout implements View.OnClickListener, 
     public void setWidthAndHeightProportion(int width, int height) {
         this.defaultWidthProportion = width;
         this.defaultHeightProportion = height;
+    }
+
+    /**
+     * 设置视频信息
+     *
+     * @param url 视频地址
+     */
+    public void setDataSource(String url) {
+        setDataSource(url, "");
     }
 
     /**

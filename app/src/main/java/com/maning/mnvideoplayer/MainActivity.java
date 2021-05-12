@@ -65,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
         mnViderPlayer.setWidthAndHeightProportion(16, 9);   //设置宽高比
         mnViderPlayer.setIsNeedBatteryListen(true);         //设置电量监听
         mnViderPlayer.setIsNeedNetChangeListen(true);       //设置网络监听
-        //第一次进来先设置数据
-        mnViderPlayer.setDataSource(url1, "标题1");
         //播放完成监听
         mnViderPlayer.setOnCompletionListener(new OnCompletionListener() {
             @Override
@@ -103,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "当前网络不可用,检查网络设置", Toast.LENGTH_LONG).show();
             }
         });
+        //第一次进来先设置数据
+        mnViderPlayer.setDataSource(url1);
+//        mnViderPlayer.playVideo(url1, "标题1");
     }
 
     public void btn01(View view) {

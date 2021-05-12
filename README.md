@@ -11,13 +11,13 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 
 ## 项目截图：
 
-![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/videoplay_001.png)
 
-![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/videoplay_002.png)
-
-![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/videoplay_003.png)
-
-![](https://github.com/maning0303/MNVideoPlayer/raw/master/screenshots/videoplay_004.png)
+<div align="center">
+<img src = "screenshots/videoplay_001.png" width=200 >
+<img src = "screenshots/videoplay_002.png" width=200 >
+<img src = "screenshots/videoplay_003.png" width=200 >
+<img src = "screenshots/videoplay_004.png" width=200 >
+</div>
 
 
 ## 如何添加
@@ -35,7 +35,8 @@ SurfaceView + MediaPlayer 实现的视频播放器，支持横竖屏切换，手
 #### 2.在app目录下的build.gradle中添加依赖
 ``` gradle
 	dependencies {
-	     implementation 'com.github.maning0303:MNVideoPlayer:V1.0.9'
+            //AndroidX
+	        implementation 'com.github.maning0303:MNVideoPlayer:V1.1.0'
 	}
 ```
 
